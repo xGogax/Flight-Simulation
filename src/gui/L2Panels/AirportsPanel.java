@@ -4,30 +4,26 @@ import java.awt.*;
 
 public class AirportsPanel extends Panel {
     private Label airPanel = new Label("Airports");
-    private Panel tablePanel = new Panel();
+    private Panel tablePanel = new Panel(null);
     private Panel tableContainer = new Panel();
+    private ScrollPane scrollPane;
 
-    private int currentRow = 0;
+    private int currentY = 0; // y koordinata gde sledeci red ide
+    private final int rowHeight = 30; // visina jednog reda
+
     public void addAirport(String name, String code, String x, String y, String shown) {
-        Color rowColor = (currentRow % 2 == 0) ? new Color(157, 220, 245) : new Color(206, 237, 249);
-        tablePanel.add(createRow(new String[]{name, code, x, y, shown}, rowColor));
-        currentRow++;
-        tablePanel.validate();
+        Color rowColor = (currentY / rowHeight % 2 == 0) ? new Color(157, 220, 245)  : new Color(206, 237, 249);
+
+        Panel row = createRow(new String[]{name, code, x, y, shown}, rowColor);
+        row.setBounds(0, currentY, 720, rowHeight);
+
+        tablePanel.add(row);
+        currentY += rowHeight;
+
+        tablePanel.setPreferredSize(new Dimension(720, Math.max(currentY, 400)));
         tablePanel.repaint();
+        tablePanel.validate();
     }
-
-    private Panel createEmptyRow(Color bgColor) {
-        Panel row = new Panel(new GridLayout(1, 5));
-        row.setBackground(bgColor);
-
-        for (int i = 0; i < 5; i++) {
-            Label lbl = new Label("");
-            row.add(lbl);
-        }
-
-        return row;
-    }
-
 
     private Panel createRow(String[] texts, Color bgColor){
         Panel row = new Panel(new GridLayout(1, texts.length));
@@ -43,33 +39,35 @@ public class AirportsPanel extends Panel {
         return row;
     }
 
-
     private void populateAirportsPanel(){
         this.setLayout(new BorderLayout());
-        //TEXT
+
+        // title
         this.add(airPanel, BorderLayout.NORTH);
         airPanel.setForeground(new Color(49, 95, 166));
-        airPanel.setFont(new Font("Ariel", Font.BOLD, 20));
+        airPanel.setFont(new Font("Arial", Font.BOLD, 20));
         airPanel.setAlignment(Label.CENTER);
 
-        //TABLE
+        // table container
         tableContainer.setLayout(new BorderLayout());
 
-        //header
+        // header
         Panel headerPanel = createRow(new String[]{"Name", "Code", "X", "Y", "Shown"}, new Color(51, 160, 209));
         tableContainer.add(headerPanel, BorderLayout.NORTH);
 
-        //tabela
-        tablePanel.setLayout(new GridLayout(0,1));
+        // table body
         tablePanel.setBackground(new Color(124, 174, 194));
+        tablePanel.setPreferredSize(new Dimension(750, 400)); // fiksa velicina praznine
 
-        ScrollPane scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+        //scroll
+        scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
         scrollPane.add(tablePanel);
         scrollPane.setBackground(new Color(82, 176, 221));
-        scrollPane.setSize(181*4 - 25, 181*4 - 25);
+        scrollPane.setPreferredSize(new Dimension(725, 181 * 4 - 25));
+        tablePanel.setPreferredSize(new Dimension(715, 400));
 
-        tableContainer.add(scrollPane, BorderLayout.CENTER);
 
+        tableContainer.add(scrollPane, BorderLayout.WEST);
         this.add(tableContainer, BorderLayout.CENTER);
     }
 
