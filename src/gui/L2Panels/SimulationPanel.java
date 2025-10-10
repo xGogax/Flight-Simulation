@@ -1,5 +1,7 @@
 package gui.L2Panels;
 
+import body.aerodrom.AerodromContainer;
+
 import java.awt.*;
 
 public class SimulationPanel extends Panel {
@@ -20,7 +22,7 @@ public class SimulationPanel extends Panel {
         this.add(simulator, BorderLayout.CENTER);
     }
 
-    public SimulationPanel() {
+    public SimulationPanel(AerodromContainer aerodroms) {
         populateSimulationPanel();
     }
 }

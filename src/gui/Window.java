@@ -1,5 +1,7 @@
 package gui;
 
+import body.aerodrom.Aerodrom;
+import body.aerodrom.AerodromContainer;
 import gui.L1Panels.LowerPanel;
 import gui.L1Panels.UpperPanel;
 
@@ -8,11 +10,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Window extends Frame {
+    private AerodromContainer aerodroms = new AerodromContainer();
 
-    UpperPanel UP = new UpperPanel();
-    LowerPanel LP = new LowerPanel();
+    private UpperPanel UP = new UpperPanel(aerodroms);
+    private LowerPanel LP = new LowerPanel();
 
-    private void populateWindow(){
+    private void populateWindow() {
         this.add(UP, BorderLayout.NORTH);
         this.add(LP, BorderLayout.SOUTH);
     }

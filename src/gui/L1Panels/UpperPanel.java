@@ -1,13 +1,14 @@
 package gui.L1Panels;
 
+import body.aerodrom.AerodromContainer;
 import gui.L2Panels.AirportsPanel;
 import gui.L2Panels.SimulationPanel;
 
 import java.awt.*;
 
 public class UpperPanel extends Panel {
-    SimulationPanel simulator = new SimulationPanel();
-    AirportsPanel airportsPanel = new AirportsPanel();
+    SimulationPanel simulator;
+    AirportsPanel airportsPanel;
 
     private void populateUpperPanel(){
         this.setBackground(new Color(206, 237, 249));
@@ -17,35 +18,15 @@ public class UpperPanel extends Panel {
 
         //AIRPORTS PANEL
         this.add(airportsPanel);
-
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-        airportsPanel.addAirport("Nikola Tesla1", "BEG", "31", "46", "YES");
-        airportsPanel.addAirport("Paris1", "CDG", "50", "80", "No");
-
     }
 
-    public UpperPanel(){
+    public UpperPanel(AerodromContainer aerodroms){
+        simulator = new SimulationPanel(aerodroms);
+        airportsPanel = new AirportsPanel(aerodroms);
         populateUpperPanel();
+    }
+
+    public AirportsPanel getAirportsPanel() {
+        return airportsPanel;
     }
 }
