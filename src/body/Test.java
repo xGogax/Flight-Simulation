@@ -15,6 +15,8 @@ public class Test {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+
+        LetContainer letContainer = new LetContainer();
         System.out.println(container);
     }
 }
