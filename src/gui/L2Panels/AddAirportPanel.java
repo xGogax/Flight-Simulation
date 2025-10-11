@@ -3,6 +3,7 @@ package gui.L2Panels;
 import Exceptions.*;
 import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
+import org.w3c.dom.Text;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,8 +11,8 @@ import java.awt.event.ActionEvent;
 public class AddAirportPanel extends Panel {
     TextField name = new TextField(20);
     TextField code = new TextField(3);
-    TextField X = new TextField(2);
-    TextField Y = new TextField(2);
+    TextField X = new TextField(3);
+    TextField Y = new TextField(3);
     Button addAirport = new Button("Add Airport");
     AerodromContainer aerodroms;
     AirportsPanel aerodromsPanel;
@@ -20,6 +21,8 @@ public class AddAirportPanel extends Panel {
     Label codeLabel = new Label("Code:");
     Label XLabel = new Label("X:");
     Label YLabel = new Label("Y:");
+
+    TextArea consoleArea;
 
     public void populateAddAirportPanel(){
         this.setLayout(new BorderLayout(10, 10));
@@ -86,10 +89,14 @@ public class AddAirportPanel extends Panel {
                         Integer.parseInt(yText)
                 ));
 
+                consoleArea.append("UPDATE: Added airport " + name.getText() + " (" + code.getText() + ")" + " - (" + xText + ", " + yText + ")\n");
+
                 aerodromsPanel.refreshTable();
 
             } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode | CodeMustBeUnique | CoordsMustBeNumbers e) {
                 System.err.println(e.getMessage());
+                consoleArea.append(e.getMessage());
+                consoleArea.append("\n");
             }
 
             X.setText("");
@@ -103,7 +110,8 @@ public class AddAirportPanel extends Panel {
         this.add(middlePanel, BorderLayout.CENTER);
     }
 
-    public AddAirportPanel(AerodromContainer aerodroms, AirportsPanel aerodromsPanel) {
+    public AddAirportPanel(AerodromContainer aerodroms, AirportsPanel aerodromsPanel, TextArea consoleArea) {
+        this.consoleArea = consoleArea;
         this.aerodroms =  aerodroms;
         this.aerodromsPanel = aerodromsPanel;
         populateAddAirportPanel();

@@ -15,7 +15,7 @@ public class Window extends Frame {
     private LetContainer letContainer = new LetContainer();
 
     private UpperPanel UP = new UpperPanel(aerodroms, letContainer);
-    private LowerPanel LP = new LowerPanel(aerodroms, UP.getAirportsPanel());
+    private LowerPanel LP = new LowerPanel(aerodroms, UP.getAirportsPanel(), letContainer, UP.getFlightsPanel());
 
     private void populateWindow() {
         this.add(UP, BorderLayout.NORTH);

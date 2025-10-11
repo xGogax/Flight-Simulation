@@ -38,4 +38,5 @@ public class UpperPanel extends Panel {
     public AirportsPanel getAirportsPanel() {
         return airportsPanel;
     }
+    public FlightsPanel getFlightsPanel() { return fligtsPanel;}
 }
