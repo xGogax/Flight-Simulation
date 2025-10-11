@@ -5,6 +5,7 @@ import Exceptions.FlightMustHaveAirport;
 import Exceptions.InvalidTime;
 import Exceptions.SameAirports;
 import body.aerodrom.Aerodrom;
+import body.aerodrom.AerodromContainer;
 
 public class Let {
     private Aerodrom start;
@@ -15,6 +16,15 @@ public class Let {
 
     public Let(Aerodrom start, Aerodrom end, int sat, int minut, int trajanjeMin)
     throws FlightMustHaveAirport, FlightMustHaveAirport, InvalidTime, FlightDuration, SameAirports {
+        boolean startExists = false, endExists = false;
+        for(Aerodrom a : AerodromContainer.getAerodromList()){
+            if(a.getCode().equals(start.getCode())) startExists = true;
+            if(a.getCode().equals(end.getCode())) endExists = true;
+        }
+        if(!startExists && !endExists){
+            throw new FlightMustHaveAirport();
+        }
+
         setStart(start);
         setEnd(end);
         setSat(sat);

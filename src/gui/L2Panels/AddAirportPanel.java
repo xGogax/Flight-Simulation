@@ -70,10 +70,25 @@ public class AddAirportPanel extends Panel {
         bottomPanel.add(addAirport, BorderLayout.NORTH);
 
         addAirport.addActionListener((ae) -> {
-            try{
-                aerodroms.add(new Aerodrom(name.getText(), code.getText(), Integer.parseInt(X.getText()), Integer.parseInt(Y.getText())));
+            try {
+                // Proveri da li su X i Y brojevi
+                String xText = X.getText();
+                String yText = Y.getText();
+
+                if (!xText.matches("-?\\d+") || !yText.matches("-?\\d+")) {
+                    throw new CoordsMustBeNumbers();
+                }
+
+                aerodroms.add(new Aerodrom(
+                        name.getText(),
+                        code.getText(),
+                        Integer.parseInt(xText),
+                        Integer.parseInt(yText)
+                ));
+
                 aerodromsPanel.refreshTable();
-            } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode | CodeMustBeUnique e) {
+
+            } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode | CodeMustBeUnique | CoordsMustBeNumbers e) {
                 System.err.println(e.getMessage());
             }
 

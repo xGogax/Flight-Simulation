@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AerodromContainer {
-    private final List<Aerodrom> aerodroms = new ArrayList<>();
+    private static final List<Aerodrom> aerodroms = new ArrayList<>();
 
     public void add(Aerodrom a) throws  CodeMustBeUnique {
         for(Aerodrom ex : aerodroms) {
@@ -29,5 +29,9 @@ public class AerodromContainer {
             sb.append(ex.toString());
         }
         return sb.toString();
+    }
+
+    public static List<Aerodrom> getAerodromList() {
+        return aerodroms;
     }
 }
