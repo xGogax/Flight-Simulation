@@ -10,16 +10,19 @@ public class AirportsPanel extends Panel {
     private Panel tablePanel = new Panel(null);
     private Panel tableContainer = new Panel();
     private ScrollPane scrollPane;
+    private final int rowHeight = 30;
+    private AerodromContainer container;
 
     private void populateAirportsPanel() {
         this.setLayout(new BorderLayout());
 
-        // Naslov
+        // LABELA
         this.add(airPanel, BorderLayout.NORTH);
         airPanel.setForeground(new Color(49, 95, 166));
         airPanel.setFont(new Font("Arial", Font.BOLD, 20));
         airPanel.setAlignment(Label.CENTER);
 
+        //TABELA
         // Container
         tableContainer.setLayout(new BorderLayout());
         Panel headerPanel = createRow(
@@ -38,9 +41,6 @@ public class AirportsPanel extends Panel {
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         this.add(tableContainer, BorderLayout.CENTER);
     }
-
-    private final int rowHeight = 30;
-    private AerodromContainer container; // referenca na tvoj izvor podataka
 
     public AirportsPanel(AerodromContainer container) {
         this.container = container;

@@ -43,6 +43,8 @@ public class Aerodrom {
     }
 
     public void setX(int x) throws InvalidXCoordinate {
+        String xVal = String.valueOf(x);
+        if(xVal.isBlank()) throw new InvalidXCoordinate();
         if(x <= -90 || x >= 90) throw new InvalidXCoordinate();
         this.x = x;
     }
@@ -52,6 +54,8 @@ public class Aerodrom {
     }
 
     public void setY(int y) throws InvalidYCoordinate {
+        String yVal = String.valueOf(y);
+        if(yVal.isBlank()) throw new InvalidYCoordinate();
         if(y <= -90 || y >= 90) throw new InvalidYCoordinate();
         this.y = y;
     }

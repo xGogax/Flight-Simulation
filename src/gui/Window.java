@@ -13,7 +13,7 @@ public class Window extends Frame {
     private AerodromContainer aerodroms = new AerodromContainer();
 
     private UpperPanel UP = new UpperPanel(aerodroms);
-    private LowerPanel LP = new LowerPanel();
+    private LowerPanel LP = new LowerPanel(aerodroms, UP.getAirportsPanel());
 
     private void populateWindow() {
         this.add(UP, BorderLayout.NORTH);
@@ -35,6 +35,7 @@ public class Window extends Frame {
 
         setVisible(true);
     }
+
     public static void main(String[] args) {
         new Window();
     }
