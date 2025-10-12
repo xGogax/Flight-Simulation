@@ -14,21 +14,28 @@ public class Window extends Frame {
     private AerodromContainer aerodroms = new AerodromContainer();
     private LetContainer letContainer = new LetContainer();
 
-    private UpperPanel UP = new UpperPanel(aerodroms, letContainer);
-    private LowerPanel LP = new LowerPanel(aerodroms, UP.getAirportsPanel(), letContainer, UP.getFlightsPanel(), UP.getSimulationPanel());
-
+    private UpperPanel UP;
+    private LowerPanel LP;
     private AutoCloseTimer autoCloseTimer;
-
-    private void populateWindow() {
-        this.add(UP, BorderLayout.NORTH);
-        this.add(LP, BorderLayout.SOUTH);
-    }
 
     public Window() {
         setResizable(false);
         setTitle("Flight Simulator");
 
-        populateWindow();
+        AppContext ctx = AppContext.getInstance();
+        ctx.setAerodromContainer(aerodroms);
+        ctx.setLetContainer(letContainer);
+
+        UP = new UpperPanel();
+        ctx.setAirportsPanel(UP.getAirportsPanel());
+        ctx.setFlightsPanel(UP.getFlightsPanel());
+        ctx.setSimulator(UP.getSimulationPanel());
+
+        LP = new LowerPanel();
+
+        add(UP, BorderLayout.NORTH);
+        add(LP, BorderLayout.SOUTH);
+
         pack();
         setLocationRelativeTo(null);
 

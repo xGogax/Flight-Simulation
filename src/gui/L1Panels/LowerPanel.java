@@ -4,6 +4,7 @@ import body.FileLoader;
 import body.aerodrom.AerodromContainer;
 import body.let.LetContainer;
 import gui.L2Panels.*;
+import gui.AppContext;
 
 import java.awt.*;
 
@@ -13,17 +14,18 @@ public class LowerPanel extends Panel {
     private AirportsPanel ap;
     private AddFlightPanel afp;
     private Button addFromFile;
-    private TextArea consoleArea; // konzola
+    private TextArea consoleArea;
     private LetContainer letContainer;
     private FlightsPanel flightsPanel;
     private SimulationPanel simulator;
 
-    public LowerPanel(AerodromContainer aerodrom, AirportsPanel aerodromPanel, LetContainer letContainer, FlightsPanel flightsPanel, SimulationPanel simulator) {
-        this.simulator = simulator;
-        this.flightsPanel = flightsPanel;
-        this.aerodrom = aerodrom;
-        this.ap = aerodromPanel;
-        this.letContainer = letContainer;
+    public LowerPanel() {
+        AppContext ctx = AppContext.getInstance();
+        this.simulator = ctx.getSimulator();
+        this.flightsPanel = ctx.getFlightsPanel();
+        this.aerodrom = ctx.getAerodromContainer();
+        this.ap = ctx.getAirportsPanel();
+        this.letContainer = ctx.getLetContainer();
 
         consoleArea = new TextArea();
         consoleArea.setFont(new Font("Monospaced", Font.BOLD, 20));
@@ -33,8 +35,10 @@ public class LowerPanel extends Panel {
         consoleArea.setColumns(120);
         consoleArea.setRows(18);
 
-        abp = new AddAirportPanel(aerodrom, aerodromPanel, consoleArea, simulator);
-        afp = new AddFlightPanel(letContainer, aerodrom, consoleArea, flightsPanel);
+        ctx.setConsole(consoleArea);
+
+        abp = new AddAirportPanel();
+        afp = new AddFlightPanel();
         addFromFile = new Button("Add From File");
 
         populateLowerPanel();
@@ -46,22 +50,18 @@ public class LowerPanel extends Panel {
 
         //--- LEVA STRANA ---
         Panel leftColumn = new Panel(new GridLayout(0, 1, 0, 10));
-
         leftColumn.add(abp);
         leftColumn.add(afp);
 
         Panel buttonPanel = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         addFromFile.setPreferredSize(new Dimension(500, 40));
         addFromFile.setFont(new Font("Arial", Font.BOLD, 18));
-        addFromFile.setBackground(new Color(70, 108, 159));
-        buttonPanel.add(addFromFile);
-        addFromFile.setFont(new Font("Arial", Font.BOLD, 20));
         addFromFile.setBackground(new Color(105, 161, 236));
+        buttonPanel.add(addFromFile);
         leftColumn.add(buttonPanel);
 
         Panel leftWrapper = new Panel(new BorderLayout());
         leftWrapper.add(leftColumn, BorderLayout.NORTH);
-
         this.add(leftWrapper, BorderLayout.WEST);
 
         //--- DESNA STRANA ---
@@ -75,38 +75,31 @@ public class LowerPanel extends Panel {
 
         Panel consoleWrapper = new Panel(new BorderLayout());
         consoleWrapper.add(consolePanel, BorderLayout.NORTH);
-
         this.add(consoleWrapper, BorderLayout.CENTER);
 
         addFromFile.addActionListener((ae) -> {
-            try{
+            try {
                 FileDialog fd = new FileDialog((Frame) this.getParent(), "Open File", FileDialog.LOAD);
                 fd.setVisible(true);
 
                 String directory = fd.getDirectory();
                 String file = fd.getFile();
 
-                if(file != null){
+                if (file != null) {
                     String fullPath = (directory + file).trim();
-
                     FileLoader loader = new FileLoader(aerodrom, letContainer, consoleArea);
                     loader.loadFile(fullPath);
 
                     consoleArea.append("INFO: File loaded: " + fullPath + "\n");
-
                     ap.refreshTable();
                     flightsPanel.refreshTable();
                     simulator.refresh();
                 } else {
-                    consoleArea.append("INFO: File not opened. \n");
+                    consoleArea.append("INFO: File not opened.\n");
                 }
-            } catch(Exception e){
+            } catch (Exception e) {
                 consoleArea.append("ERROR: " + e.getMessage() + "\n");
             }
         });
-    }
-
-    public TextArea getConsoleArea() {
-        return consoleArea;
     }
 }

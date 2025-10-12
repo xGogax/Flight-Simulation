@@ -1,43 +1,52 @@
 package gui.L1Panels;
 
-import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
-import body.let.Let;
 import body.let.LetContainer;
 import gui.L2Panels.AirportsPanel;
 import gui.L2Panels.FlightsPanel;
 import gui.L2Panels.SimulationPanel;
+import gui.AppContext;
 
 import java.awt.*;
 
 public class UpperPanel extends Panel {
-    SimulationPanel simulator;
-    AirportsPanel airportsPanel;
-    FlightsPanel fligtsPanel;
+    private SimulationPanel simulator;
+    private AirportsPanel airportsPanel;
+    private FlightsPanel flightsPanel;
 
-    private void populateUpperPanel(){
-        this.setBackground(new Color(206, 237, 249));
+    public UpperPanel() {
+        AppContext ctx = AppContext.getInstance();
+        AerodromContainer aerodroms = ctx.getAerodromContainer();
+        LetContainer letContainer = ctx.getLetContainer();
 
-        //SIMULATION PANEL
-        this.add(simulator);
-
-        //AIRPORTS PANEL
-        this.add(airportsPanel);
-
-        //FLIGHTS PANEL
-        this.add(fligtsPanel);
-    }
-
-    public UpperPanel(AerodromContainer aerodroms, LetContainer letContainer) {
         simulator = new SimulationPanel(aerodroms);
         airportsPanel = new AirportsPanel(aerodroms);
-        fligtsPanel = new FlightsPanel(letContainer);
+        flightsPanel = new FlightsPanel(letContainer);
+
+        ctx.setAirportsPanel(airportsPanel);
+        ctx.setFlightsPanel(flightsPanel);
+        ctx.setSimulator(simulator);
+
         populateUpperPanel();
+    }
+
+    private void populateUpperPanel() {
+        this.setBackground(new Color(206, 237, 249));
+
+        this.add(simulator);
+        this.add(airportsPanel);
+        this.add(flightsPanel);
     }
 
     public AirportsPanel getAirportsPanel() {
         return airportsPanel;
     }
-    public FlightsPanel getFlightsPanel() { return fligtsPanel;}
-    public SimulationPanel getSimulationPanel() { return simulator; }
+
+    public FlightsPanel getFlightsPanel() {
+        return flightsPanel;
+    }
+
+    public SimulationPanel getSimulationPanel() {
+        return simulator;
+    }
 }
