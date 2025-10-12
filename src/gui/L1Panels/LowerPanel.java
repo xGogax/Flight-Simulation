@@ -3,10 +3,7 @@ package gui.L1Panels;
 import body.FileLoader;
 import body.aerodrom.AerodromContainer;
 import body.let.LetContainer;
-import gui.L2Panels.AddAirportPanel;
-import gui.L2Panels.AddFlightPanel;
-import gui.L2Panels.AirportsPanel;
-import gui.L2Panels.FlightsPanel;
+import gui.L2Panels.*;
 
 import java.awt.*;
 
@@ -19,8 +16,10 @@ public class LowerPanel extends Panel {
     private TextArea consoleArea; // konzola
     private LetContainer letContainer;
     private FlightsPanel flightsPanel;
+    private SimulationPanel simulator;
 
-    public LowerPanel(AerodromContainer aerodrom, AirportsPanel aerodromPanel, LetContainer letContainer, FlightsPanel flightsPanel) {
+    public LowerPanel(AerodromContainer aerodrom, AirportsPanel aerodromPanel, LetContainer letContainer, FlightsPanel flightsPanel, SimulationPanel simulator) {
+        this.simulator = simulator;
         this.flightsPanel = flightsPanel;
         this.aerodrom = aerodrom;
         this.ap = aerodromPanel;
@@ -32,9 +31,9 @@ public class LowerPanel extends Panel {
         consoleArea.setBackground(new Color(70, 108, 159));
         consoleArea.setForeground(Color.WHITE);
         consoleArea.setColumns(120);
-        consoleArea.setRows(17);
+        consoleArea.setRows(18);
 
-        abp = new AddAirportPanel(aerodrom, aerodromPanel, consoleArea);
+        abp = new AddAirportPanel(aerodrom, aerodromPanel, consoleArea, simulator);
         afp = new AddFlightPanel(letContainer, aerodrom, consoleArea, flightsPanel);
         addFromFile = new Button("Add From File");
 
@@ -97,6 +96,7 @@ public class LowerPanel extends Panel {
 
                     ap.refreshTable();
                     flightsPanel.refreshTable();
+                    simulator.refresh();
                 } else {
                     consoleArea.append("INFO: File not opened. \n");
                 }

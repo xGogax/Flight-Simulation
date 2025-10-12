@@ -107,6 +107,10 @@ public class AddFlightPanel extends Panel {
                 // Parsiranje i formatiranje vremena takeOff
                 String[] parts = takeOff.getText().split(":");
                 if(parts.length != 2 || !parts[0].matches("\\d+") || !parts[1].matches("\\d+")) {
+                    start.setText("");
+                    end.setText("");
+                    duration.setText("");
+                    takeOff.setText("");
                     throw new InvalidTime();
                 }
 
@@ -117,6 +121,10 @@ public class AddFlightPanel extends Panel {
                 String formattedTakeOff = String.format("%02d:%02d", first, second);
 
                 if(!duration.getText().matches("\\d+")) {
+                    start.setText("");
+                    end.setText("");
+                    duration.setText("");
+                    takeOff.setText("");
                     throw new FlightDurationString();
                 }
 
@@ -129,14 +137,14 @@ public class AddFlightPanel extends Panel {
 
                 flightsPanel.refreshTable();
 
-                start.setText("");
-                end.setText("");
-                duration.setText("");
-                takeOff.setText(formattedTakeOff);
-
             } catch (FlightMustHaveAirport | InvalidTime | FlightDuration | SameAirports | FlightDurationString e) {
                 consoleArea.append("ERROR: " + e.getMessage() + "\n");
             }
+
+            start.setText("");
+            end.setText("");
+            duration.setText("");
+            takeOff.setText("");
         });
 
         // Dodavanje svih redova u glavni panel

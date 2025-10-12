@@ -23,8 +23,10 @@ public class AddAirportPanel extends Panel {
 
     AerodromContainer aerodroms;
     AirportsPanel aerodromsPanel;
+    SimulationPanel simulator;
 
-    public AddAirportPanel(AerodromContainer aerodroms, AirportsPanel aerodromsPanel, TextArea consoleArea) {
+    public AddAirportPanel(AerodromContainer aerodroms, AirportsPanel aerodromsPanel, TextArea consoleArea, SimulationPanel simulator) {
+        this.simulator = simulator;
         this.consoleArea = consoleArea;
         this.aerodroms = aerodroms;
         this.aerodromsPanel = aerodromsPanel;
@@ -105,6 +107,7 @@ public class AddAirportPanel extends Panel {
                         " (" + code.getText() + ") - (" + xText + ", " + yText + ")\n");
 
                 aerodromsPanel.refreshTable();
+                simulator.refresh();
 
             } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode |
                      CodeMustBeUnique | CoordsMustBeNumbers e) {
