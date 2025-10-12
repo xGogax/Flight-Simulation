@@ -48,19 +48,20 @@ public class FlightsPanel extends Panel {
         refreshTable();
     }
 
-    public void refreshTable(){
+    public void refreshTable() {
         tablePanel.removeAll();
         int currentY = 0;
         int index = 0;
 
-        for(Let l : letContainer.getFlights()) {
+        for (Let l : letContainer.getFlights()) {
             Color rowColor = (index % 2 == 0) ? new Color(157, 220, 245) : new Color(206, 237, 249);
 
-            String satTemp = String.valueOf(l.getSat());
-            String minTemp = String.valueOf(l.getMinut());
-            String full = satTemp + ":" + minTemp;
+            String fullTakeOff = String.format("%02d:%02d", l.getSat(), l.getMinut());
 
-            Panel row = createRow(new String[]{l.getStart().getCode(), l.getEnd().getCode(), full, String.valueOf(l.getTrajanjeMin())}, rowColor);
+            Panel row = createRow(
+                    new String[]{l.getStart().getCode(), l.getEnd().getCode(), fullTakeOff, String.valueOf(l.getTrajanjeMin())},
+                    rowColor
+            );
 
             row.setBounds(0, currentY, 500, rowHeight);
             tablePanel.add(row);
@@ -68,7 +69,7 @@ public class FlightsPanel extends Panel {
             index++;
         }
 
-        tablePanel.setPreferredSize(new Dimension(500, Math.max(currentY, 500)));
+        tablePanel.setPreferredSize(new Dimension(500, Math.max(currentY, scrollPane.getHeight())));
         tablePanel.revalidate();
         tablePanel.repaint();
     }

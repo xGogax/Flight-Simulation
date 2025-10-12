@@ -1,5 +1,6 @@
 package gui.L1Panels;
 
+import body.FileLoader;
 import body.aerodrom.AerodromContainer;
 import body.let.LetContainer;
 import gui.L2Panels.AddAirportPanel;
@@ -44,54 +45,65 @@ public class LowerPanel extends Panel {
         this.setLayout(new BorderLayout(10, 10));
         this.setBackground(new Color(206, 237, 249));
 
-        //LEVA KOLONA
-        Panel leftColumn = new Panel();
-        leftColumn.setLayout(new GridLayout(0, 1, 0, 10)); // vertikalni razmak između panela
-        leftColumn.setBackground(new Color(206, 237, 249));
+        //--- LEVA STRANA ---
+        Panel leftColumn = new Panel(new GridLayout(0, 1, 0, 10));
 
         leftColumn.add(abp);
         leftColumn.add(afp);
 
-        // BUTTON
         Panel buttonPanel = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        buttonPanel.setBackground(new Color(206, 237, 249));
-
-        Dimension flightSize = afp.getPreferredSize();
-        addFromFile.setPreferredSize(new Dimension(500, 40)); // visina 40px
+        addFromFile.setPreferredSize(new Dimension(500, 40));
         addFromFile.setFont(new Font("Arial", Font.BOLD, 18));
-        addFromFile.setBackground(new Color(105, 161, 236));
-
+        addFromFile.setBackground(new Color(70, 108, 159));
         buttonPanel.add(addFromFile);
+        addFromFile.setFont(new Font("Arial", Font.BOLD, 20));
+        addFromFile.setBackground(new Color(105, 161, 236));
         leftColumn.add(buttonPanel);
 
-        // WRAPPER
-        Panel leftWrapper = new Panel(new FlowLayout(FlowLayout.LEFT, 20, 20));
-        leftWrapper.setBackground(new Color(206, 237, 249));
-        leftWrapper.add(leftColumn);
+        Panel leftWrapper = new Panel(new BorderLayout());
+        leftWrapper.add(leftColumn, BorderLayout.NORTH);
 
         this.add(leftWrapper, BorderLayout.WEST);
 
-        //DESNA KOLONA
-        Panel rightWrapper = new Panel(new BorderLayout());
-        rightWrapper.setBackground(new Color(206, 237, 249));
-
-        // Labela iznad konzole
+        //--- DESNA STRANA ---
         Label consoleLabel = new Label("Console Log");
         consoleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         consoleLabel.setForeground(new Color(49, 95, 166));
-        consoleLabel.setAlignment(Label.LEFT);
 
         Panel consolePanel = new Panel(new BorderLayout());
-        consolePanel.setBackground(new Color(206, 237, 249));
         consolePanel.add(consoleLabel, BorderLayout.NORTH);
         consolePanel.add(consoleArea, BorderLayout.CENTER);
 
-        // Dodaj marginu oko konzole
-        Panel consoleWrapper = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        consoleWrapper.setBackground(new Color(206, 237, 249));
-        consoleWrapper.add(consolePanel);
+        Panel consoleWrapper = new Panel(new BorderLayout());
+        consoleWrapper.add(consolePanel, BorderLayout.NORTH);
 
         this.add(consoleWrapper, BorderLayout.CENTER);
+
+        addFromFile.addActionListener((ae) -> {
+            try{
+                FileDialog fd = new FileDialog((Frame) this.getParent(), "Open File", FileDialog.LOAD);
+                fd.setVisible(true);
+
+                String directory = fd.getDirectory();
+                String file = fd.getFile();
+
+                if(file != null){
+                    String fullPath = (directory + file).trim();
+
+                    FileLoader loader = new FileLoader(aerodrom, letContainer, consoleArea);
+                    loader.loadFile(fullPath);
+
+                    consoleArea.append("INFO: File loaded: " + fullPath + "\n");
+
+                    ap.refreshTable();
+                    flightsPanel.refreshTable();
+                } else {
+                    consoleArea.append("INFO: File not opened. \n");
+                }
+            } catch(Exception e){
+                consoleArea.append("ERROR: " + e.getMessage() + "\n");
+            }
+        });
     }
 
     public TextArea getConsoleArea() {

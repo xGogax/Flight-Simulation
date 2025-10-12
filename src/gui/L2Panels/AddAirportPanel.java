@@ -3,117 +3,126 @@ package gui.L2Panels;
 import Exceptions.*;
 import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
-import org.w3c.dom.Text;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class AddAirportPanel extends Panel {
-    TextField name = new TextField(20);
-    TextField code = new TextField(3);
-    TextField X = new TextField(3);
-    TextField Y = new TextField(3);
+    TextField name = new TextField(15);
+    TextField code = new TextField(15);
+    TextField X = new TextField(15);
+    TextField Y = new TextField(15);
     Button addAirport = new Button("Add Airport");
-    AerodromContainer aerodroms;
-    AirportsPanel aerodromsPanel;
 
-    Label nameLabel = new Label("Name:");
-    Label codeLabel = new Label("Code:");
-    Label XLabel = new Label("X:");
-    Label YLabel = new Label("Y:");
+    Label nameLabel = new Label("Name");
+    Label codeLabel = new Label("Code");
+    Label XLabel = new Label("X");
+    Label YLabel = new Label("Y");
 
     TextArea consoleArea;
 
-    public void populateAddAirportPanel(){
-        this.setLayout(new BorderLayout(10, 10));
+    AerodromContainer aerodroms;
+    AirportsPanel aerodromsPanel;
 
-        // NAME FIELD
-        Panel topPanel = new Panel(new BorderLayout());
+    public AddAirportPanel(AerodromContainer aerodroms, AirportsPanel aerodromsPanel, TextArea consoleArea) {
+        this.consoleArea = consoleArea;
+        this.aerodroms = aerodroms;
+        this.aerodromsPanel = aerodromsPanel;
+        populateAddAirportPanel();
+    }
+
+    private void populateAddAirportPanel() {
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        //Name Code
+        Panel row1 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+
+        Panel namePanel = new Panel(new BorderLayout());
         nameLabel.setForeground(new Color(49, 95, 166));
         nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         nameLabel.setAlignment(Label.LEFT);
         name.setFont(new Font("Arial", Font.BOLD, 20));
-        topPanel.add(nameLabel, BorderLayout.NORTH);
-        topPanel.add(name, BorderLayout.CENTER);
+        namePanel.add(nameLabel, BorderLayout.NORTH);
+        namePanel.add(name, BorderLayout.CENTER);
 
-        // CODE, X, Y
-        Panel middlePanel = new Panel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-
-        // CODE
         Panel codePanel = new Panel(new BorderLayout());
         codeLabel.setForeground(new Color(49, 95, 166));
         codeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         codeLabel.setAlignment(Label.LEFT);
         code.setFont(new Font("Arial", Font.BOLD, 20));
-        middlePanel.add(codeLabel, BorderLayout.NORTH);
-        middlePanel.add(code, BorderLayout.CENTER);
+        codePanel.add(codeLabel, BorderLayout.NORTH);
+        codePanel.add(code, BorderLayout.CENTER);
 
-        // X
+        row1.add(namePanel);
+        row1.add(codePanel);
+
+        //X i Y
+        Panel row2 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
         Panel xPanel = new Panel(new BorderLayout());
         XLabel.setForeground(new Color(49, 95, 166));
         XLabel.setFont(new Font("Arial", Font.BOLD, 20));
         XLabel.setAlignment(Label.LEFT);
         X.setFont(new Font("Arial", Font.BOLD, 20));
-        middlePanel.add(XLabel, BorderLayout.NORTH);
-        middlePanel.add(X, BorderLayout.CENTER);
+        xPanel.add(XLabel, BorderLayout.NORTH);
+        xPanel.add(X, BorderLayout.CENTER);
 
-        // Y
         Panel yPanel = new Panel(new BorderLayout());
         YLabel.setForeground(new Color(49, 95, 166));
         YLabel.setFont(new Font("Arial", Font.BOLD, 20));
         YLabel.setAlignment(Label.LEFT);
         Y.setFont(new Font("Arial", Font.BOLD, 20));
-        middlePanel.add(YLabel, BorderLayout.NORTH);
-        middlePanel.add(Y,  BorderLayout.CENTER);
+        yPanel.add(YLabel, BorderLayout.NORTH);
+        yPanel.add(Y, BorderLayout.CENTER);
 
-        // Button
-        Panel bottomPanel = new Panel(new BorderLayout());
+        row2.add(xPanel);
+        row2.add(yPanel);
+
+        //DUGME
+        Panel row3 = new Panel(new BorderLayout());
         addAirport.setFont(new Font("Arial", Font.BOLD, 20));
         addAirport.setBackground(new Color(105, 161, 236));
-        bottomPanel.add(addAirport, BorderLayout.NORTH);
+        row3.add(addAirport, BorderLayout.CENTER);
 
+        //Akcija
         addAirport.addActionListener((ae) -> {
             try {
-                // Proveri da li su X i Y brojevi
-                String xText = X.getText();
-                String yText = Y.getText();
+                String xText = X.getText().trim();
+                String yText = Y.getText().trim();
 
                 if (!xText.matches("-?\\d+") || !yText.matches("-?\\d+")) {
                     throw new CoordsMustBeNumbers();
                 }
 
                 aerodroms.add(new Aerodrom(
-                        name.getText(),
-                        code.getText(),
+                        name.getText().trim(),
+                        code.getText().trim(),
                         Integer.parseInt(xText),
                         Integer.parseInt(yText)
                 ));
 
-                consoleArea.append("UPDATE: Added airport " + name.getText() + " (" + code.getText() + ")" + " - (" + xText + ", " + yText + ")\n");
+                consoleArea.append("UPDATE: Added airport " + name.getText() +
+                        " (" + code.getText() + ") - (" + xText + ", " + yText + ")\n");
 
                 aerodromsPanel.refreshTable();
 
-            } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode | CodeMustBeUnique | CoordsMustBeNumbers e) {
+            } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode |
+                     CodeMustBeUnique | CoordsMustBeNumbers e) {
                 System.err.println(e.getMessage());
                 consoleArea.append(e.getMessage());
                 consoleArea.append("\n");
             }
 
-            X.setText("");
-            Y.setText("");
+            // Reset polja
             name.setText("");
             code.setText("");
+            X.setText("");
+            Y.setText("");
         });
 
-        this.add(bottomPanel, BorderLayout.SOUTH);
-        this.add(topPanel, BorderLayout.NORTH);
-        this.add(middlePanel, BorderLayout.CENTER);
-    }
-
-    public AddAirportPanel(AerodromContainer aerodroms, AirportsPanel aerodromsPanel, TextArea consoleArea) {
-        this.consoleArea = consoleArea;
-        this.aerodroms =  aerodroms;
-        this.aerodromsPanel = aerodromsPanel;
-        populateAddAirportPanel();
+        //Dodavanje redova u glavni panel
+        this.add(row1);
+        this.add(row2);
+        this.add(row3);
     }
 }

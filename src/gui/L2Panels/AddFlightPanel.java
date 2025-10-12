@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AddFlightPanel extends Panel {
-    TextField start = new TextField(20);
+    TextField start = new TextField(15);
     TextField end = new TextField(15);
     TextField takeOff = new TextField(15);
     TextField duration = new TextField(15);
@@ -88,7 +88,7 @@ public class AddFlightPanel extends Panel {
         row3.add(addFlight, BorderLayout.CENTER);
 
         addFlight.addActionListener((ae) -> {
-            try{
+            try {
                 String startCode = start.getText().trim();
                 String endCode = end.getText().trim();
 
@@ -96,49 +96,47 @@ public class AddFlightPanel extends Panel {
                 Aerodrom endTemp = null;
 
                 for(Aerodrom a : aerodroms.getAerodroms()) {
-                    if(a.getCode().equals(startCode)) {
-                        startTemp = a;
-                    }
-                    if (a.getCode().equals(endCode)) {
-                        endTemp = a;
-                    }
+                    if(a.getCode().equals(startCode)) startTemp = a;
+                    if(endTemp == null && a.getCode().equals(endCode)) endTemp = a;
                 }
+
                 if(startTemp == null || endTemp == null) {
                     throw new FlightMustHaveAirport();
                 }
 
+                // Parsiranje i formatiranje vremena takeOff
                 String[] parts = takeOff.getText().split(":");
-                if(!parts[0].matches("-?\\d+") || !parts[1].matches("-?\\d+")){
+                if(parts.length != 2 || !parts[0].matches("\\d+") || !parts[1].matches("\\d+")) {
                     throw new InvalidTime();
                 }
+
                 int first = Integer.parseInt(parts[0]);
                 int second = Integer.parseInt(parts[1]);
 
-                if(!duration.getText().matches("-?\\d+")){
+                // Formatiraj sa dve cifre
+                String formattedTakeOff = String.format("%02d:%02d", first, second);
+
+                if(!duration.getText().matches("\\d+")) {
                     throw new FlightDurationString();
                 }
 
-                letContainer.add(new Let(
-                        startTemp,
-                        endTemp,
-                        first,
-                        second,
-                        Integer.parseInt(duration.getText())
-                ));
+                int dur = Integer.parseInt(duration.getText());
 
-                consoleArea.append("UPDATE: Added flight (" + start.getText() + " - " +  end.getText() + "), TakeOff: " + takeOff.getText() + ", Duration: " + duration.getText() + "\n");
+                letContainer.add(new Let(startTemp, endTemp, first, second, dur));
+
+                consoleArea.append("UPDATE: Added flight (" + startCode + " -> " + endCode + "), TakeOff: "
+                        + formattedTakeOff + ", Duration: " + dur + "\n");
 
                 flightsPanel.refreshTable();
-            } catch (FlightMustHaveAirport | InvalidTime | FlightDuration | SameAirports | FlightDurationString e) {
-                System.err.println(e.getMessage());
-                consoleArea.append(e.getMessage());
-                consoleArea.append("\n");
-            }
 
-            start.setText("");
-            end.setText("");
-            duration.setText("");
-            takeOff.setText("");
+                start.setText("");
+                end.setText("");
+                duration.setText("");
+                takeOff.setText(formattedTakeOff);
+
+            } catch (FlightMustHaveAirport | InvalidTime | FlightDuration | SameAirports | FlightDurationString e) {
+                consoleArea.append("ERROR: " + e.getMessage() + "\n");
+            }
         });
 
         // Dodavanje svih redova u glavni panel

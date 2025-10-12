@@ -1,10 +1,10 @@
 package gui;
 
-import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
 import body.let.LetContainer;
 import gui.L1Panels.LowerPanel;
 import gui.L1Panels.UpperPanel;
+import gui.Timer.AutoCloseTimer;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -17,6 +17,8 @@ public class Window extends Frame {
     private UpperPanel UP = new UpperPanel(aerodroms, letContainer);
     private LowerPanel LP = new LowerPanel(aerodroms, UP.getAirportsPanel(), letContainer, UP.getFlightsPanel());
 
+    private AutoCloseTimer autoCloseTimer;
+
     private void populateWindow() {
         this.add(UP, BorderLayout.NORTH);
         this.add(LP, BorderLayout.SOUTH);
@@ -28,9 +30,14 @@ public class Window extends Frame {
 
         populateWindow();
         pack();
+        setLocationRelativeTo(null);
+
+        // AUTOCLOSE TIMER
+        autoCloseTimer = new AutoCloseTimer(this);
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                autoCloseTimer.stopTimer();
                 dispose();
             }
         });
