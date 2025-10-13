@@ -11,6 +11,8 @@ public class Aerodrom {
     private int x;
     private int y;
 
+    private boolean show = true;
+
     public Aerodrom(String name, String code, int x, int y) throws InvalidName, InvalidCode, InvalidXCoordinate, InvalidYCoordinate {
         setName(name);
         setCode(code);
@@ -70,6 +72,14 @@ public class Aerodrom {
         }
 
         this.y = y;
+    }
+
+    public void setshow(boolean show) {
+        this.show = show;
+    }
+
+    public boolean getShow() {
+        return show;
     }
 
     @Override

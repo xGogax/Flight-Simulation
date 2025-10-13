@@ -4,6 +4,7 @@ import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
 
 import java.awt.*;
+import java.awt.event.ItemListener;
 
 public class AirportsPanel extends Panel {
     private Label airPanel = new Label("Airports");
@@ -12,6 +13,8 @@ public class AirportsPanel extends Panel {
     private ScrollPane scrollPane;
     private final int rowHeight = 30;
     private AerodromContainer container;
+
+    private SimulationPanel simulator;
 
     private void populateAirportsPanel() {
         this.setLayout(new BorderLayout());
@@ -43,7 +46,8 @@ public class AirportsPanel extends Panel {
         this.add(tableContainer, BorderLayout.CENTER);
     }
 
-    public AirportsPanel(AerodromContainer container) {
+    public AirportsPanel(AerodromContainer container, SimulationPanel simulator) {
+        this.simulator = simulator;
         this.container = container;
         populateAirportsPanel();
         refreshTable();
@@ -58,6 +62,24 @@ public class AirportsPanel extends Panel {
             Color rowColor = (index % 2 == 0) ? new Color(157, 220, 245) : new Color(206, 237, 249);
 
             Panel row = createRow(new String[]{a.getName(), a.getCode(), String.valueOf(a.getX()), String.valueOf(a.getY()), "Yes"}, rowColor, true);
+
+            for(Component comp : row.getComponents()) {
+                if(comp instanceof Checkbox) {
+                    Checkbox checkbox = (Checkbox) comp;
+
+                    checkbox.addItemListener(e -> {
+                        boolean checked = checkbox.getState();
+
+                        if(!checked) {
+                            a.setshow(false);
+                            simulator.refresh();
+                        } else {
+                            a.setshow(true);
+                            simulator.refresh();
+                        }
+                    });
+                }
+            }
 
             row.setBounds(0, currentY, 735, rowHeight);
             tablePanel.add(row);

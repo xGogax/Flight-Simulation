@@ -20,7 +20,7 @@ public class UpperPanel extends Panel {
         LetContainer letContainer = ctx.getLetContainer();
 
         simulator = new SimulationPanel(aerodroms);
-        airportsPanel = new AirportsPanel(aerodroms);
+        airportsPanel = new AirportsPanel(aerodroms, simulator);
         flightsPanel = new FlightsPanel(letContainer);
 
         ctx.setAirportsPanel(airportsPanel);

@@ -128,19 +128,21 @@ public class SimulationPanel extends Panel {
             g.setFont(new Font("Arial", Font.BOLD, 12));
 
             for (Aerodrom a : aerodroms.getAerodroms()) {
-                int xPixel = (a.getX() + 90) * scale;
-                int yPixel = (90 - a.getY()) * scale;
+                if(a.getShow()){
+                    int xPixel = (a.getX() + 90) * scale;
+                    int yPixel = (90 - a.getY()) * scale;
 
-                if (a == selectedAerodrom && blinkState) {
-                    g.setColor(Color.RED);
-                } else {
-                    g.setColor(Color.GRAY);
+                    if (a == selectedAerodrom && blinkState) {
+                        g.setColor(Color.RED);
+                    } else {
+                        g.setColor(Color.GRAY);
+                    }
+
+                    g.fillRect(xPixel, yPixel, scale, scale);
+
+                    g.setColor(Color.BLACK);
+                    g.drawString(a.getCode(), xPixel + scale + 2, yPixel + scale + 2);
                 }
-
-                g.fillRect(xPixel, yPixel, scale, scale);
-
-                g.setColor(Color.BLACK);
-                g.drawString(a.getCode(), xPixel + scale + 2, yPixel + scale + 2);
             }
         }
     }
