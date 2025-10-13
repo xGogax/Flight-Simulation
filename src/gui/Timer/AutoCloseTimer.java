@@ -14,13 +14,15 @@ public class AutoCloseTimer {
     private Dialog warningDialog;
     private Label warningLabel;
 
+    private boolean paused = false;
+
     public AutoCloseTimer(Frame parent) {
-        // kreiraj warning dijalog
-        warningDialog = new Dialog(parent, "Upozorenje", true);
+        // WARNING DIALOG
+        warningDialog = new Dialog(parent, "Warning", true);
         warningDialog.setLayout(new BorderLayout());
         warningLabel = new Label("", Label.CENTER);
         warningLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        Button continueBtn = new Button("Nastavi");
+        Button continueBtn = new Button("Continue");
         continueBtn.addActionListener(e -> {
             warningDialog.setVisible(false);
             resetTimer();
@@ -29,19 +31,21 @@ public class AutoCloseTimer {
         warningDialog.add(continueBtn, BorderLayout.SOUTH);
         warningDialog.setSize(300, 120);
 
-        // dodaj listener-e na sve komponente unutar parent
+        // dodaj listener-e na sve komponente
         addListenersRecursively(parent);
 
         // startuj tajmer
-        timer = new Timer();
+        timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
+                if (paused) return;  // pauza
+
                 elapsed++;
                 int remaining = timeout - elapsed;
 
                 if (remaining <= warningTime && remaining > 0) {
                     EventQueue.invokeLater(() -> {
-                        warningLabel.setText("Program će se zatvoriti za " + remaining + " sekundi.");
+                        warningLabel.setText("Program will be closed in " + remaining + " seconds.");
                         if (!warningDialog.isVisible()) {
                             warningDialog.setLocationRelativeTo(parent);
                             warningDialog.setVisible(true);
@@ -86,5 +90,16 @@ public class AutoCloseTimer {
 
     public void stopTimer() {
         timer.cancel();
+    }
+
+    public void pauseTimer() {
+        paused = true;
+        if (warningDialog.isVisible()) {
+            warningDialog.setVisible(false);
+        }
+    }
+
+    public void resumeTimer() {
+        paused = false;
     }
 }

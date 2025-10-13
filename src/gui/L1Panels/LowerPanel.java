@@ -102,4 +102,8 @@ public class LowerPanel extends Panel {
             }
         });
     }
+
+    public TextArea getConsoleArea() {
+        return consoleArea;
+    }
 }

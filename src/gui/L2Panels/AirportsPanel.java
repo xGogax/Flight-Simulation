@@ -27,7 +27,8 @@ public class AirportsPanel extends Panel {
         tableContainer.setLayout(new BorderLayout());
         Panel headerPanel = createRow(
                 new String[]{"Name", "Code", "X", "Y", "Shown"},
-                new Color(51, 160, 209)
+                new Color(51, 160, 209),
+                false
         );
         tableContainer.add(headerPanel, BorderLayout.NORTH);
 
@@ -56,7 +57,7 @@ public class AirportsPanel extends Panel {
         for (Aerodrom a : container.getAerodroms()) {
             Color rowColor = (index % 2 == 0) ? new Color(157, 220, 245) : new Color(206, 237, 249);
 
-            Panel row = createRow(new String[]{a.getName(), a.getCode(), String.valueOf(a.getX()), String.valueOf(a.getY()), "Yes"}, rowColor);
+            Panel row = createRow(new String[]{a.getName(), a.getCode(), String.valueOf(a.getX()), String.valueOf(a.getY()), "Yes"}, rowColor, true);
 
             row.setBounds(0, currentY, 735, rowHeight);
             tablePanel.add(row);
@@ -69,15 +70,23 @@ public class AirportsPanel extends Panel {
         tablePanel.repaint();
     }
 
-    private Panel createRow(String[] texts, Color bgColor) {
+    private Panel createRow(String[] texts, Color bgColor, boolean header) {
         Panel row = new Panel(new GridLayout(1, texts.length));
         row.setBackground(bgColor);
 
-        for (String text : texts) {
-            Label label = new Label(text, Label.CENTER);
-            label.setForeground(Color.BLACK);
-            label.setFont(new Font("Arial", Font.BOLD, 16));
-            row.add(label);
+        for(int i = 0; i < texts.length; i++) {
+            if(i == texts.length - 1 && header) {
+                //checkbox
+                Checkbox checkbox = new Checkbox(texts[i]);
+                checkbox.setState(texts[i].equals("Yes"));
+                checkbox.setFont(new Font("Arial", Font.BOLD, 16));
+                row.add(checkbox);
+            } else {
+                Label label = new Label(texts[i], Label.CENTER);
+                label.setForeground(Color.BLACK);
+                label.setFont(new Font("Arial", Font.BOLD, 16));
+                row.add(label);
+            }
         }
         return row;
     }

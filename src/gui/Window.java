@@ -26,11 +26,13 @@ public class Window extends Frame {
         ctx.setAerodromContainer(aerodroms);
         ctx.setLetContainer(letContainer);
 
+        // --- Upper Panel ---
         UP = new UpperPanel();
         ctx.setAirportsPanel(UP.getAirportsPanel());
         ctx.setFlightsPanel(UP.getFlightsPanel());
         ctx.setSimulator(UP.getSimulationPanel());
 
+        // --- Lower Panel ---
         LP = new LowerPanel();
 
         add(UP, BorderLayout.NORTH);
@@ -39,9 +41,11 @@ public class Window extends Frame {
         pack();
         setLocationRelativeTo(null);
 
-        // AUTOCLOSE TIMER
+        // --- AutoClose Timer ---
         autoCloseTimer = new AutoCloseTimer(this);
+        UP.getSimulationPanel().setAutoCloseTimer(autoCloseTimer);
 
+        // Window listener
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 autoCloseTimer.stopTimer();
