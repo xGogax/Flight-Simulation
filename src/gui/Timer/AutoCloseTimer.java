@@ -31,7 +31,6 @@ public class AutoCloseTimer {
         warningDialog.add(continueBtn, BorderLayout.SOUTH);
         warningDialog.setSize(300, 120);
 
-        // dodaj listener-e na sve komponente
         addListenersRecursively(parent);
 
         // startuj tajmer

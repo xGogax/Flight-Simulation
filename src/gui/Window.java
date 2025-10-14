@@ -50,6 +50,7 @@ public class Window extends Frame {
             public void windowClosing(WindowEvent e) {
                 autoCloseTimer.stopTimer();
                 dispose();
+                System.exit(0);
             }
         });
 

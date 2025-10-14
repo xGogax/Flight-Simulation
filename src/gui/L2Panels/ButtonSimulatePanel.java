@@ -1,0 +1,121 @@
+package gui.L2Panels;
+
+import body.AirportFlightTable;
+import gui.AppContext;
+
+import java.awt.*;
+
+public class ButtonSimulatePanel extends Panel {
+    private Button simulate;
+    private Button pause;
+
+    private volatile boolean paused = false; // flag za pauzu
+    private volatile boolean running = false; // da se thread ne pokrene više puta
+
+    public ButtonSimulatePanel() {
+        AppContext ctx = AppContext.getInstance();
+        setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+
+        simulate = new Button("Simulate");
+        pause = new Button("Pause");
+
+        Dimension buttonSize = new Dimension(300, 40);
+        simulate.setPreferredSize(buttonSize);
+        pause.setPreferredSize(buttonSize);
+        pause.setEnabled(false);
+
+        simulate.setFont(new Font("Arial", Font.BOLD, 16));
+        pause.setFont(new Font("Arial", Font.BOLD, 16));
+
+        simulate.setBackground(new Color(105, 161, 236));
+        pause.setBackground(new Color(105, 161, 236));
+
+        // --- Simulate dugme ---
+        simulate.addActionListener((ae) -> {
+            pause.setEnabled(true);
+            if (running) return;
+            running = true;
+
+            AirportFlightTable aft = new AirportFlightTable(ctx.getAerodromContainer(), ctx.getLetContainer());
+            aft.sort();
+            System.out.println(aft);
+
+            new Thread(() -> {
+                int hours = 0;
+                int minutes = 0;
+                boolean wasPaused = false;
+
+                try {
+                    EventQueue.invokeLater(() ->
+                            AppContext.getInstance().getConsole().append("Simulation started.\n")
+                    );
+
+                    while (hours < 24) {
+                        if (paused && !wasPaused) {
+                            EventQueue.invokeLater(() ->
+                                    AppContext.getInstance().getConsole().append("Simulation paused.\n")
+                            );
+                            wasPaused = true;
+                        }
+
+                        //nigga wait
+                        while (paused) {
+                            Thread.sleep(100);
+                        }
+
+                        //nigga go
+                        if (wasPaused) {
+                            wasPaused = false;
+                        }
+
+                        String timeStr = String.format("%02d:%02d", hours, minutes);
+                        EventQueue.invokeLater(() ->
+                                AppContext.getInstance().getConsole().append(timeStr + "\n")
+                        );
+
+                        minutes += 10;
+                        if (minutes >= 60) {
+                            minutes = 0;
+                            hours++;
+                        }
+
+                        Thread.sleep(1000);
+                    }
+                    if(hours == 24) {
+                        pause.setEnabled(false);
+                    }
+
+                    EventQueue.invokeLater(() ->{
+                        AppContext.getInstance().getConsole().append("Simulation finished.\n");
+                        pause.setEnabled(false);
+                        pause.setLabel("Pause");
+                        paused = false;
+                        running = false;
+                    });
+
+                } catch (InterruptedException e) {
+                    EventQueue.invokeLater(() ->
+                            AppContext.getInstance().getConsole().append(e.getMessage() + "\n")
+                    );
+                }
+            }).start();
+        });
+
+        // --- Pause dugme ---
+        pause.addActionListener((ae) -> {
+            if (!paused) {
+                paused = true;
+                pause.setLabel("Resume");
+            } else {
+                paused = false;
+                pause.setLabel("Pause");
+            }
+        });
+
+        add(simulate);
+        add(pause);
+    }
+
+    public Button getSimulate() { return simulate; }
+    public Button getPause() { return pause; }
+}

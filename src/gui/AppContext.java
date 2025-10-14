@@ -3,14 +3,16 @@ package gui;
 import body.aerodrom.AerodromContainer;
 import body.let.LetContainer;
 import gui.L2Panels.AirportsPanel;
+import gui.L2Panels.ButtonSimulatePanel;
 import gui.L2Panels.FlightsPanel;
 import gui.L2Panels.SimulationPanel;
 
-import java.awt.TextArea;
+import java.awt.*;
 
 public class AppContext {
     private static AppContext instance = null;
 
+    private ButtonSimulatePanel buttonSimulatePanel;
     private SimulationPanel simulator;
     private AirportsPanel airportsPanel;
     private FlightsPanel flightsPanel;
@@ -32,6 +34,7 @@ public class AppContext {
     public void setLetContainer(LetContainer lc) { this.letContainer = lc; }
     public void setAerodromContainer(AerodromContainer ac) { this.aerodromContainer = ac; }
     public void setConsole(TextArea console) { this.console = console; }
+    public void setButtonSimulatePanel(ButtonSimulatePanel bsp) { this.buttonSimulatePanel = bsp; }
 
     // Getteri
     public SimulationPanel getSimulator() { return simulator; }
@@ -40,4 +43,5 @@ public class AppContext {
     public LetContainer getLetContainer() { return letContainer; }
     public AerodromContainer getAerodromContainer() { return aerodromContainer; }
     public TextArea getConsole() { return console; }
+    public ButtonSimulatePanel getButtonSimulatePanel() { return buttonSimulatePanel; }
 }
