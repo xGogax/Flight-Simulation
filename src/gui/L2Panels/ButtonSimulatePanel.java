@@ -1,9 +1,11 @@
 package gui.L2Panels;
 
 import body.AirportFlightTable;
+import body.let.Let;
 import gui.AppContext;
 
 import java.awt.*;
+import java.util.List;
 
 public class ButtonSimulatePanel extends Panel {
     private Button simulate;
@@ -72,6 +74,13 @@ public class ButtonSimulatePanel extends Panel {
                         EventQueue.invokeLater(() ->
                                 AppContext.getInstance().getConsole().append(timeStr + "\n")
                         );
+
+                        List<Let> flightsInInterval = aft.getFlightsInterval(hours, minutes);
+                        EventQueue.invokeLater(() -> {
+                            for (Let let : flightsInInterval) {
+                                AppContext.getInstance().getConsole().append("INFO: Flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has begun.\n");
+                            }
+                        });
 
                         minutes += 10;
                         if (minutes >= 60) {

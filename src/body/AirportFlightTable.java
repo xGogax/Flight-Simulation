@@ -15,14 +15,31 @@ public class AirportFlightTable {
     Map<Aerodrom, List<Let>> flightsByAirport = new HashMap<>();
 
     public AirportFlightTable(AerodromContainer aerodromContainer, LetContainer letContainer) {
-        for(Aerodrom a : aerodromContainer.getAerodroms()){
+        for (Aerodrom a : aerodromContainer.getAerodroms()) {
             flightsByAirport.put(a, new ArrayList<>());
-            for(Let l : letContainer.getFlights()){
-                if(l.getStart().getCode().equals(a.getCode())){
+            for (Let l : letContainer.getFlights()) {
+                if (l.getStart().getCode().equals(a.getCode())) {
                     flightsByAirport.get(a).add(l);
                 }
             }
         }
+    }
+
+    public List<Let> getFlightsInterval (int hour, int min){
+        List<Let> result = new ArrayList<>();
+        int intervalStart = hour * 60 + min;
+        int intervalEnd = intervalStart + 9;
+
+        for(List<Let> letovi: flightsByAirport.values()){
+            for(Let l : letovi){
+                int letMinutes = l.getSat() * 60 + l.getMinut();
+                if(letMinutes >= intervalStart && letMinutes <= intervalEnd){
+                    result.add(l);
+                }
+            }
+        }
+
+        return result;
     }
 
     public void sort() {
@@ -62,12 +79,7 @@ public class AirportFlightTable {
         for (Map.Entry<Aerodrom, List<Let>> entry : flightsByAirport.entrySet()) {
             sb.append(entry.getKey().getCode()).append(":\n");
             for (Let l : entry.getValue()) {
-                sb.append("  ")
-                        .append(l.getStart().getCode()).append(" -> ")
-                        .append(l.getEnd().getCode())
-                        .append(", Takeoff: ").append(l.getSat()).append(":").append(l.getMinut())
-                        .append(", Duration: ").append(l.getTrajanjeMin())
-                        .append("\n");
+                sb.append("    ").append(l.toString()).append("\n");
             }
         }
         return sb.toString();

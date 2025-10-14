@@ -7,8 +7,6 @@ import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
 import body.let.Let;
 import body.let.LetContainer;
-import javax.swing.*;
-import Exceptions.*;
 
 public class FileLoader {
     private AerodromContainer aerodroms;

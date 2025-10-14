@@ -83,12 +83,10 @@ public class Let {
 
     @Override
     public String toString() {
-        return "Let{" +
-                "start=" + start +
-                ", end=" + end +
-                ", sat=" + sat +
-                ", minut=" + minut +
-                ", trajanjeMin=" + trajanjeMin +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(start.getCode()).append(" -> ").append(end.getCode())
+                .append(", Takeoff: ").append(getSat()).append(":").append(getMinut())
+                .append(", Duration: ").append(getTrajanjeMin());
+        return sb.toString();
     }
 }
