@@ -12,7 +12,7 @@ public class ButtonSimulatePanel extends Panel {
     private Button pause;
 
     private volatile boolean paused = false; // flag za pauzu
-    private volatile boolean running = false; // da se thread ne pokrene više puta
+    private volatile boolean running = false; // da se thread ne pokrene vise puta
 
     public ButtonSimulatePanel() {
         AppContext ctx = AppContext.getInstance();
@@ -60,12 +60,10 @@ public class ButtonSimulatePanel extends Panel {
                             wasPaused = true;
                         }
 
-                        //nigga wait
                         while (paused) {
                             Thread.sleep(100);
                         }
 
-                        //nigga go
                         if (wasPaused) {
                             wasPaused = false;
                         }
@@ -96,6 +94,7 @@ public class ButtonSimulatePanel extends Panel {
 
                     EventQueue.invokeLater(() ->{
                         AppContext.getInstance().getConsole().append("Simulation finished.\n");
+                        aft.reset();
                         pause.setEnabled(false);
                         pause.setLabel("Pause");
                         paused = false;

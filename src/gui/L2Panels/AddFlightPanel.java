@@ -7,8 +7,9 @@ import body.let.Let;
 import body.let.LetContainer;
 import gui.AppContext;
 
-import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AddFlightPanel extends Panel {
     TextField start = new TextField(15);
@@ -38,63 +39,79 @@ public class AddFlightPanel extends Panel {
     }
 
     private void populateAddFlightPanel() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        // START END
+        // ===== RED 1: Start i End =====
         Panel row1 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 5));
 
         Panel startPanel = new Panel(new BorderLayout());
         startLabel.setForeground(new Color(49, 95, 166));
         startLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        startLabel.setAlignment(Label.LEFT);
-        start.setFont(new Font("Arial", Font.BOLD, 20));
         startPanel.add(startLabel, BorderLayout.NORTH);
+        start.setFont(new Font("Arial", Font.BOLD, 20));
         startPanel.add(start, BorderLayout.CENTER);
 
         Panel endPanel = new Panel(new BorderLayout());
         endLabel.setForeground(new Color(49, 95, 166));
         endLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        endLabel.setAlignment(Label.LEFT);
-        end.setFont(new Font("Arial", Font.BOLD, 20));
         endPanel.add(endLabel, BorderLayout.NORTH);
+        end.setFont(new Font("Arial", Font.BOLD, 20));
         endPanel.add(end, BorderLayout.CENTER);
 
         row1.add(startPanel);
         row1.add(endPanel);
 
-        // TAKEOFF DURATION
-        Panel row2 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        row1.setPreferredSize(new Dimension(0, 70));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        this.add(row1, gbc);
+
+        // ===== RED 2: TakeOff i Duration =====
+        Panel row2 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 5));
 
         Panel takeOffPanel = new Panel(new BorderLayout());
         takeOffLabel.setForeground(new Color(49, 95, 166));
         takeOffLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        takeOffLabel.setAlignment(Label.LEFT);
-        takeOff.setFont(new Font("Arial", Font.BOLD, 20));
         takeOffPanel.add(takeOffLabel, BorderLayout.NORTH);
+        takeOff.setFont(new Font("Arial", Font.BOLD, 20));
         takeOffPanel.add(takeOff, BorderLayout.CENTER);
 
         Panel durationPanel = new Panel(new BorderLayout());
         durationLabel.setForeground(new Color(49, 95, 166));
         durationLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        durationLabel.setAlignment(Label.LEFT);
-        duration.setFont(new Font("Arial", Font.BOLD, 20));
         durationPanel.add(durationLabel, BorderLayout.NORTH);
+        duration.setFont(new Font("Arial", Font.BOLD, 20));
         durationPanel.add(duration, BorderLayout.CENTER);
 
         row2.add(takeOffPanel);
         row2.add(durationPanel);
 
-        // BUTTON
-        Panel row3 = new Panel(new BorderLayout());
+        // Ograničavamo visinu reda
+        row2.setPreferredSize(new Dimension(0, 70));
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        this.add(row2, gbc);
+
+        // ===== RED 3: Dugme full-width =====
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         addFlight.setFont(new Font("Arial", Font.BOLD, 20));
         addFlight.setBackground(new Color(105, 161, 236));
-        row3.add(addFlight, BorderLayout.CENTER);
+        this.add(addFlight, gbc);
 
-        addFlight.addActionListener((ae) -> handleAddFlight());
-
-        this.add(row1);
-        this.add(row2);
-        this.add(row3);
+        addFlight.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                handleAddFlight();
+            }
+        });
     }
 
     private void handleAddFlight() {

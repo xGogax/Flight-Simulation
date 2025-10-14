@@ -5,7 +5,10 @@ import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
 import body.let.Let;
 import body.let.LetContainer;
+import gui.AppContext;
+import gui.L2Panels.FlightsPanel;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +16,13 @@ import java.util.Map;
 
 public class AirportFlightTable {
     Map<Aerodrom, List<Let>> flightsByAirport = new HashMap<>();
+    FlightsPanel flightsPanel;
+    TextArea console;
 
     public AirportFlightTable(AerodromContainer aerodromContainer, LetContainer letContainer) {
+        AppContext ctx = AppContext.getInstance();
+        console = ctx.getConsole();
+        flightsPanel = ctx.getFlightsPanel();
         for (Aerodrom a : aerodromContainer.getAerodroms()) {
             flightsByAirport.put(a, new ArrayList<>());
             for (Let l : letContainer.getFlights()) {
@@ -61,8 +69,11 @@ public class AirportFlightTable {
                     if (currTime - prevTime < 10) {
                         currTime = prevTime + 10;
                         try {
+                            l.setChanged(true);
                             l.setSat(currTime / 60);
                             l.setMinut(currTime % 60);
+                            console.append("UPDATE: Flight " + l.getStart().getCode() + " -> " + l.getEnd().getCode() + " has changed take-off to " + String.format("%02d:%02d", currTime / 60, currTime % 60) + "\n");
+
                         } catch (InvalidTime e) {
                             throw new RuntimeException(e);
                         }
@@ -71,6 +82,17 @@ public class AirportFlightTable {
                 prev = l;
             }
         }
+
+        flightsPanel.refreshTable();
+    }
+
+    public void reset() {
+        for(Map.Entry<Aerodrom, List<Let>> entry : flightsByAirport.entrySet()){
+            for(Let l : entry.getValue()){
+                l.setChanged(false);
+            }
+        }
+        flightsPanel.refreshTable();
     }
 
     @Override

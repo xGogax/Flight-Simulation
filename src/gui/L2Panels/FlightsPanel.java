@@ -27,7 +27,8 @@ public class FlightsPanel extends Panel {
         tableContainer.setLayout(new BorderLayout());
         Panel headerPanel = createRow(
                 new String[]{"Start", "End", "Takeoff", "Duration"},
-                new Color(51, 160, 209)
+                new Color(51, 160, 209),
+                false
         );
         tableContainer.add(headerPanel, BorderLayout.NORTH);
 
@@ -52,15 +53,16 @@ public class FlightsPanel extends Panel {
         tablePanel.removeAll();
         int currentY = 0;
         int index = 0;
-
         for (Let l : letContainer.getFlights()) {
             Color rowColor = (index % 2 == 0) ? new Color(157, 220, 245) : new Color(206, 237, 249);
 
             String fullTakeOff = String.format("%02d:%02d", l.getSat(), l.getMinut());
 
+            // Prosledi l.isChanged() da oznaci crvenu boju
             Panel row = createRow(
                     new String[]{l.getStart().getCode(), l.getEnd().getCode(), fullTakeOff, String.valueOf(l.getTrajanjeMin())},
-                    rowColor
+                    rowColor,
+                    l.getChanged()
             );
 
             row.setBounds(0, currentY, 500, rowHeight);
@@ -68,22 +70,28 @@ public class FlightsPanel extends Panel {
             currentY += rowHeight;
             index++;
         }
-
         tablePanel.setPreferredSize(new Dimension(500, Math.max(currentY, scrollPane.getHeight())));
         tablePanel.revalidate();
         tablePanel.repaint();
     }
 
-    private Panel createRow (String[] texts, Color bgColor) {
+    private Panel createRow(String[] texts, Color bgColor, boolean isChanged) {
         Panel row = new Panel(new GridLayout(1, texts.length));
         row.setBackground(bgColor);
 
-        for(String text : texts) {
-            Label label = new Label(text, Label.CENTER);
-            label.setForeground(Color.BLACK);
+        for (int i = 0; i < texts.length; i++) {
+            Label label = new Label(texts[i], Label.CENTER);
             label.setFont(new Font("Arial", Font.BOLD, 16));
+
+            if (isChanged && i == 2) {
+                label.setForeground(Color.RED);
+            } else {
+                label.setForeground(Color.BLACK);
+            }
+
             row.add(label);
         }
+
         return row;
     }
 }

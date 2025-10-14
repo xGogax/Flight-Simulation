@@ -14,6 +14,8 @@ public class Let {
     private int minut;
     private int trajanjeMin;
 
+    private boolean changed = false;
+
     public Let(Aerodrom start, Aerodrom end, int sat, int minut, int trajanjeMin)
     throws FlightMustHaveAirport, FlightMustHaveAirport, InvalidTime, FlightDuration, SameAirports {
         boolean startExists = false, endExists = false;
@@ -88,5 +90,12 @@ public class Let {
                 .append(", Takeoff: ").append(getSat()).append(":").append(getMinut())
                 .append(", Duration: ").append(getTrajanjeMin());
         return sb.toString();
+    }
+
+    public boolean getChanged() {
+        return changed;
+    }
+    public void setChanged(boolean changed){
+        this.changed = changed;
     }
 }
