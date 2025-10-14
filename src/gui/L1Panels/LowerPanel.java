@@ -14,6 +14,7 @@ public class LowerPanel extends Panel {
     private AirportsPanel ap;
     private AddFlightPanel afp;
     private Button addFromFile;
+    private Button exportToFile;
     private TextArea consoleArea;
     private LetContainer letContainer;
     private FlightsPanel flightsPanel;
@@ -50,9 +51,22 @@ public class LowerPanel extends Panel {
         abp = new AddAirportPanel();
         afp = new AddFlightPanel();
 
-        addFromFile = new Button("Add From File");
-        addFromFile.setFont(new Font("Arial", Font.BOLD, 16));
-        addFromFile.setBackground(new Color(105, 161, 236));
+        // --- FILE BUTTONS ---
+        addFromFile = new Button("Import File");
+        exportToFile = new Button("Export File");
+
+        Font buttonFont = new Font("Arial", Font.BOLD, 16);
+        Color buttonColor = new Color(105, 161, 236);
+
+        addFromFile.setFont(buttonFont);
+        exportToFile.setFont(buttonFont);
+
+        addFromFile.setBackground(buttonColor);
+        exportToFile.setBackground(buttonColor);
+
+        Dimension buttonSize = new Dimension(300, 40);
+        addFromFile.setPreferredSize(buttonSize);
+        exportToFile.setPreferredSize(buttonSize);
 
         populateLowerPanel();
     }
@@ -71,16 +85,24 @@ public class LowerPanel extends Panel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        // AddAirportPanel
         gbc.gridy = 0;
         leftColumn.add(abp, gbc);
 
+        // AddFlightPanel
         gbc.gridy = 1;
         leftColumn.add(afp, gbc);
 
-        gbc.gridy = 2;
-        addFromFile.setPreferredSize(new Dimension(300, 40));
-        leftColumn.add(addFromFile, gbc);
+        // ADD FROM FILE and EXPORT FILE
+        Panel fileButtonsPanel = new Panel(new GridLayout(1, 2, 10, 0)); // 1 red, 2 kolone
+        fileButtonsPanel.setBackground(new Color(206, 237, 249));
+        fileButtonsPanel.add(addFromFile);
+        fileButtonsPanel.add(exportToFile);
 
+        gbc.gridy = 2;
+        leftColumn.add(fileButtonsPanel, gbc);
+
+        // ButtonSimulatePanel
         gbc.gridy = 3;
         leftColumn.add(buttonSimulatePanel, gbc);
 
@@ -117,6 +139,30 @@ public class LowerPanel extends Panel {
                     simulator.refresh();
                 } else {
                     consoleArea.append("INFO: File not opened.\n");
+                }
+
+            } catch (Exception e) {
+                consoleArea.append("ERROR: " + e.getMessage() + "\n");
+            }
+        });
+
+        // --- ActionListener za "Export File" ---
+        exportToFile.addActionListener((ae) -> {
+            try {
+                FileDialog fd = new FileDialog((Frame) this.getParent(), "Save File", FileDialog.SAVE);
+                fd.setVisible(true);
+
+                String directory = fd.getDirectory();
+                String file = fd.getFile();
+
+                if (file != null) {
+                    String fullPath = (directory + file).trim();
+                    FileLoader loader = new FileLoader(aerodrom, letContainer, consoleArea);
+                    loader.saveFile(fullPath);
+
+                    consoleArea.append("INFO: File exported: " + fullPath + "\n");
+                } else {
+                    consoleArea.append("INFO: Export cancelled.\n");
                 }
 
             } catch (Exception e) {

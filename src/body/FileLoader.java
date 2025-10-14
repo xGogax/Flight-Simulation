@@ -7,6 +7,8 @@ import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
 import body.let.Let;
 import body.let.LetContainer;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class FileLoader {
     private AerodromContainer aerodroms;
@@ -78,6 +80,34 @@ public class FileLoader {
             } else {
                 consoleArea.append("ERROR: Unknown file format\n");
             }
+
+        } catch (Exception e) {
+            consoleArea.append("ERROR: " + e.getMessage() + "\n");
+        }
+    }
+
+    public void saveFile(String baseName) {
+        try {
+            // --- Airports ---
+            String airportFile = baseName + "Airports.csv";
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(airportFile))) {
+                bw.write("Name,Code,X,Y\n");
+                for (Aerodrom a : aerodroms.getAerodroms()) {
+                    bw.write(a.getName() + "," + a.getCode() + "," + a.getX() + "," + a.getY() + "\n");
+                }
+            }
+            consoleArea.append("INFO: Airports exported to " + airportFile + "\n");
+
+            // --- Flights ---
+            String flightsFile = baseName + "Flights.csv";
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(flightsFile))) {
+                bw.write("Start,End,TakeOff,Duration\n");
+                for (Let l : letContainer.getFlights()) {
+                    String takeOffStr = String.format("%d:%02d", l.getSat(), l.getMinut());
+                    bw.write(l.getStart().getCode() + "," + l.getEnd().getCode() + "," + takeOffStr + "," + l.getTrajanjeMin() + "\n");
+                }
+            }
+            consoleArea.append("INFO: Flights exported to " + flightsFile + "\n");
 
         } catch (Exception e) {
             consoleArea.append("ERROR: " + e.getMessage() + "\n");
