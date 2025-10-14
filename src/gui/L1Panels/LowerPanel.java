@@ -36,7 +36,7 @@ public class LowerPanel extends Panel {
         this.ap = ctx.getAirportsPanel();
         this.letContainer = ctx.getLetContainer();
 
-        // --- Console setup ---
+        // --- CONSOLE ---
         consoleArea = new TextArea();
         consoleArea.setFont(new Font("Monospaced", Font.BOLD, 16));
         consoleArea.setEditable(false);
@@ -46,9 +46,10 @@ public class LowerPanel extends Panel {
         consoleArea.setRows(18);
         ctx.setConsole(consoleArea);
 
-        // --- Panels & buttons ---
+        // --- PANNELS and BUTTONS ---
         abp = new AddAirportPanel();
         afp = new AddFlightPanel();
+
         addFromFile = new Button("Add From File");
         addFromFile.setFont(new Font("Arial", Font.BOLD, 16));
         addFromFile.setBackground(new Color(105, 161, 236));
@@ -64,28 +65,22 @@ public class LowerPanel extends Panel {
         Panel leftColumn = new Panel();
         leftColumn.setLayout(new GridBagLayout());
         leftColumn.setBackground(new Color(206, 237, 249));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // AddAirportPanel
         gbc.gridy = 0;
         leftColumn.add(abp, gbc);
 
-        // AddFlightPanel
         gbc.gridy = 1;
         leftColumn.add(afp, gbc);
 
-        // Add From File dugme
         gbc.gridy = 2;
-        addFromFile.setFont(new Font("Arial", Font.BOLD, 16));
-        addFromFile.setBackground(new Color(105, 161, 236));
-        addFromFile.setPreferredSize(new Dimension(0, 40));
+        addFromFile.setPreferredSize(new Dimension(300, 40));
         leftColumn.add(addFromFile, gbc);
 
-        // ButtonSimulatePanel
         gbc.gridy = 3;
         leftColumn.add(buttonSimulatePanel, gbc);
 
@@ -123,6 +118,7 @@ public class LowerPanel extends Panel {
                 } else {
                     consoleArea.append("INFO: File not opened.\n");
                 }
+
             } catch (Exception e) {
                 consoleArea.append("ERROR: " + e.getMessage() + "\n");
             }
