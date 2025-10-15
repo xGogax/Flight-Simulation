@@ -108,7 +108,6 @@ public class Let {
         currX += stepX;
         currY += stepY;
         ticksRemaining--;
-        System.out.println(ticksRemaining);
 
         if (ticksRemaining <= 0) {
             finished = true;
