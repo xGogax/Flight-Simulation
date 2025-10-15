@@ -2,6 +2,7 @@ package gui;
 
 import body.aerodrom.AerodromContainer;
 import body.let.LetContainer;
+import body.threadback.SharedData;
 import gui.L2Panels.AirportsPanel;
 import gui.L2Panels.ButtonSimulatePanel;
 import gui.L2Panels.FlightsPanel;
@@ -19,6 +20,7 @@ public class AppContext {
     private LetContainer letContainer;
     private AerodromContainer aerodromContainer;
     private TextArea console;
+    private SharedData sharedData;
 
     private AppContext() {}
 
@@ -35,6 +37,7 @@ public class AppContext {
     public void setAerodromContainer(AerodromContainer ac) { this.aerodromContainer = ac; }
     public void setConsole(TextArea console) { this.console = console; }
     public void setButtonSimulatePanel(ButtonSimulatePanel bsp) { this.buttonSimulatePanel = bsp; }
+    public void setSharedData(SharedData sharedData) { this.sharedData = sharedData; }
 
     // Getteri
     public SimulationPanel getSimulator() { return simulator; }
@@ -44,4 +47,5 @@ public class AppContext {
     public AerodromContainer getAerodromContainer() { return aerodromContainer; }
     public TextArea getConsole() { return console; }
     public ButtonSimulatePanel getButtonSimulatePanel() { return buttonSimulatePanel; }
+    public SharedData getSharedData() { return sharedData; }
 }

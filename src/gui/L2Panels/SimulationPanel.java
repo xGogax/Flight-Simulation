@@ -2,6 +2,9 @@ package gui.L2Panels;
 
 import body.aerodrom.Aerodrom;
 import body.aerodrom.AerodromContainer;
+import body.let.Let;
+import body.threadback.SharedData;
+import gui.AppContext;
 import gui.Timer.AutoCloseTimer;
 
 import java.awt.*;
@@ -23,12 +26,16 @@ public class SimulationPanel extends Panel {
     private boolean blinkState = false;
     private Timer blinkTimer = null;
 
+    private AppContext ctx = AppContext.getInstance();
+
     // AutoCloseTimer
     private AutoCloseTimer autoCloseTimer;
     // Setter za AutoCloseTimer
     public void setAutoCloseTimer(AutoCloseTimer timer) {
         this.autoCloseTimer = timer;
     }
+
+    SharedData sharedData;
 
     public SimulationPanel(AerodromContainer aerodroms) {
         this.aerodroms = aerodroms;
@@ -122,6 +129,43 @@ public class SimulationPanel extends Panel {
         @Override
         public void paint(Graphics g) {
             draw(g);
+
+            sharedData = ctx.getSharedData();
+            if(sharedData != null) {
+                drawFlights(g);
+            }
+        }
+
+        public void drawFlights(Graphics g) {
+            if (sharedData == null) return;
+
+            int flightSize = 8;
+            g.setColor(Color.BLUE);
+
+            synchronized (sharedData.activeFlights) {
+                var iter = sharedData.activeFlights.iterator();
+                while (iter.hasNext()) {
+                    Let let = iter.next();
+
+                    // pomeri let
+                    let.step();
+
+                    //izbaci iz liste ako se zavrsio
+                    if (let.isFinished()) {
+                        ctx.getConsole().append("INFO: flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has landed successfully.\n");
+                        let.setIscrtan(true);
+                        iter.remove();
+                        continue;
+                    }
+
+                    // trenutna pozicija
+                    int xPixel = (int)((let.getCurrentX() + 90) * scale);
+                    int yPixel = (int)((90 - let.getCurrentY()) * scale);
+
+                    // iscrtavanje plavog kruga
+                    g.fillOval(xPixel, yPixel, flightSize, flightSize);
+                }
+            }
         }
 
         public void draw(Graphics g) {

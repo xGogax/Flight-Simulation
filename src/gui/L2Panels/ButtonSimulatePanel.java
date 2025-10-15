@@ -2,6 +2,7 @@ package gui.L2Panels;
 
 import body.AirportFlightTable;
 import body.let.Let;
+import body.threadback.SharedData;
 import gui.AppContext;
 
 import java.awt.*;
@@ -10,9 +11,6 @@ import java.util.List;
 public class ButtonSimulatePanel extends Panel {
     private Button simulate;
     private Button pause;
-
-    private volatile boolean paused = false; // flag za pauzu
-    private volatile boolean running = false; // da se thread ne pokrene vise puta
 
     public ButtonSimulatePanel() {
         AppContext ctx = AppContext.getInstance();
@@ -32,63 +30,66 @@ public class ButtonSimulatePanel extends Panel {
         simulate.setBackground(new Color(105, 161, 236));
         pause.setBackground(new Color(105, 161, 236));
 
+        SharedData data = new SharedData();
+        ctx.setSharedData(data);
         // --- Simulate dugme ---
         simulate.addActionListener((ae) -> {
             pause.setEnabled(true);
-            if (running) return;
-            running = true;
+            if (data.running) return;
+            data.running = true;
 
             AirportFlightTable aft = new AirportFlightTable(ctx.getAerodromContainer(), ctx.getLetContainer());
             aft.sort();
             System.out.println(aft);
 
             new Thread(() -> {
-                int hours = 0;
-                int minutes = 0;
-                boolean wasPaused = false;
+//                int hours = 0;
+//                int minutes = 0;
+//                boolean wasPaused = false;
 
                 try {
                     EventQueue.invokeLater(() ->
                             AppContext.getInstance().getConsole().append("Simulation started.\n")
                     );
 
-                    while (hours < 24) {
-                        if (paused && !wasPaused) {
+                    while (data.hours < 24) {
+                        if (data.paused && !data.wasPaused) {
                             EventQueue.invokeLater(() ->
                                     AppContext.getInstance().getConsole().append("Simulation paused.\n")
                             );
-                            wasPaused = true;
+                            data.wasPaused = true;
                         }
 
-                        while (paused) {
+                        while (data.paused) {
                             Thread.sleep(100);
                         }
 
-                        if (wasPaused) {
-                            wasPaused = false;
+                        if (data.wasPaused) {
+                            data.wasPaused = false;
                         }
 
-                        String timeStr = String.format("%02d:%02d", hours, minutes);
+                        String timeStr = String.format("%02d:%02d", data.hours, data.minutes);
                         EventQueue.invokeLater(() ->
                                 AppContext.getInstance().getConsole().append(timeStr + "\n")
                         );
 
-                        List<Let> flightsInInterval = aft.getFlightsInterval(hours, minutes);
+                        List<Let> flightsInInterval = aft.getFlightsInterval(data.hours, data.minutes);
                         EventQueue.invokeLater(() -> {
                             for (Let let : flightsInInterval) {
                                 AppContext.getInstance().getConsole().append("INFO: Flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has begun.\n");
+                                data.activeFlights.add(let);
                             }
                         });
 
-                        minutes += 10;
-                        if (minutes >= 60) {
-                            minutes = 0;
-                            hours++;
+                        data.minutes += 10;
+                        if (data.minutes >= 60) {
+                            data.minutes = 0;
+                            data.hours++;
                         }
 
                         Thread.sleep(1000);
                     }
-                    if(hours == 24) {
+                    if(data.hours == 24) {
                         pause.setEnabled(false);
                     }
 
@@ -97,11 +98,37 @@ public class ButtonSimulatePanel extends Panel {
                         aft.reset();
                         pause.setEnabled(false);
                         pause.setLabel("Pause");
-                        paused = false;
-                        running = false;
+                        data.paused = false;
+                        data.running = false;
                     });
 
                 } catch (InterruptedException e) {
+                    EventQueue.invokeLater(() ->
+                            AppContext.getInstance().getConsole().append(e.getMessage() + "\n")
+                    );
+                }
+            }).start();
+
+            new Thread(() -> {
+                try{
+                    while(data.hours < 24) {
+                        while (data.paused) {
+                            Thread.sleep(100);
+                        }
+
+                        if (data.wasPaused) {
+                            data.wasPaused = false;
+                        }
+
+                        if(!data.activeFlights.isEmpty()) {
+                            EventQueue.invokeLater(() ->{
+                                ctx.getSimulator().refresh();
+                            });
+                            Thread.sleep(200);
+                        }
+                    }
+
+                }catch (InterruptedException e) {
                     EventQueue.invokeLater(() ->
                             AppContext.getInstance().getConsole().append(e.getMessage() + "\n")
                     );
@@ -111,11 +138,11 @@ public class ButtonSimulatePanel extends Panel {
 
         // --- Pause dugme ---
         pause.addActionListener((ae) -> {
-            if (!paused) {
-                paused = true;
+            if (!data.paused) {
+                data.paused = true;
                 pause.setLabel("Resume");
             } else {
-                paused = false;
+                data.paused = false;
                 pause.setLabel("Pause");
             }
         });
