@@ -143,26 +143,10 @@ public class SimulationPanel extends Panel {
             g.setColor(Color.BLUE);
 
             synchronized (sharedData.activeFlights) {
-                var iter = sharedData.activeFlights.iterator();
-                while (iter.hasNext()) {
-                    Let let = iter.next();
-
-                    // pomeri let
-                    let.step();
-
-                    //izbaci iz liste ako se zavrsio
-                    if (let.isFinished()) {
-                        ctx.getConsole().append("INFO: flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has landed successfully.\n");
-                        let.setIscrtan(true);
-                        iter.remove();
-                        continue;
-                    }
-
-                    // trenutna pozicija
+                for (Let let : sharedData.activeFlights) {
+                    // crtamo samo trenutnu poziciju
                     int xPixel = (int)((let.getCurrentX() + 90) * scale);
                     int yPixel = (int)((90 - let.getCurrentY()) * scale);
-
-                    // iscrtavanje plavog kruga
                     g.fillOval(xPixel, yPixel, flightSize, flightSize);
                 }
             }

@@ -32,6 +32,7 @@ public class ButtonSimulatePanel extends Panel {
 
         SharedData data = new SharedData();
         ctx.setSharedData(data);
+
         // --- Simulate dugme ---
         simulate.addActionListener((ae) -> {
             pause.setEnabled(true);
@@ -40,60 +41,47 @@ public class ButtonSimulatePanel extends Panel {
 
             AirportFlightTable aft = new AirportFlightTable(ctx.getAerodromContainer(), ctx.getLetContainer());
             aft.sort();
-            System.out.println(aft);
 
+            // --- Glavni thread: vreme i pokretanje letova ---
             new Thread(() -> {
-//                int hours = 0;
-//                int minutes = 0;
-//                boolean wasPaused = false;
-
                 try {
                     EventQueue.invokeLater(() ->
                             AppContext.getInstance().getConsole().append("Simulation started.\n")
                     );
 
                     while (data.hours < 24) {
-                        if (data.paused && !data.wasPaused) {
-                            EventQueue.invokeLater(() ->
-                                    AppContext.getInstance().getConsole().append("Simulation paused.\n")
-                            );
-                            data.wasPaused = true;
-                        }
+                        // Pauza
+                        while (data.paused) Thread.sleep(100);
 
-                        while (data.paused) {
-                            Thread.sleep(100);
-                        }
-
-                        if (data.wasPaused) {
-                            data.wasPaused = false;
-                        }
-
+                        // Vreme simulacije
                         String timeStr = String.format("%02d:%02d", data.hours, data.minutes);
                         EventQueue.invokeLater(() ->
                                 AppContext.getInstance().getConsole().append(timeStr + "\n")
                         );
 
+                        // Letovi koji krecu
                         List<Let> flightsInInterval = aft.getFlightsInterval(data.hours, data.minutes);
-                        EventQueue.invokeLater(() -> {
-                            for (Let let : flightsInInterval) {
-                                AppContext.getInstance().getConsole().append("INFO: Flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has begun.\n");
+                        for (Let let : flightsInInterval) {
+                            EventQueue.invokeLater(() ->
+                                    AppContext.getInstance().getConsole().append("INFO: Flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has started\n")
+                            );
+                            synchronized (data.activeFlights) {
                                 data.activeFlights.add(let);
+                                data.activeFlights.notify();
                             }
-                        });
+                        }
 
+                        // Pomeranje simulacije za 10 minuta
                         data.minutes += 10;
                         if (data.minutes >= 60) {
                             data.minutes = 0;
                             data.hours++;
                         }
 
-                        Thread.sleep(1000);
-                    }
-                    if(data.hours == 24) {
-                        pause.setEnabled(false);
+                        Thread.sleep(1000); // 1 sekunda = 10 minuta simulacije
                     }
 
-                    EventQueue.invokeLater(() ->{
+                    EventQueue.invokeLater(() -> {
                         AppContext.getInstance().getConsole().append("Simulation finished.\n");
                         aft.reset();
                         pause.setEnabled(false);
@@ -109,26 +97,42 @@ public class ButtonSimulatePanel extends Panel {
                 }
             }).start();
 
+            // --- Refresh thread: crtanje i landing ---
             new Thread(() -> {
-                try{
-                    while(data.hours < 24) {
-                        while (data.paused) {
-                            Thread.sleep(100);
+                try {
+                    while (data.hours < 24 || !data.activeFlights.isEmpty()) {
+                        while (data.paused) Thread.sleep(100);
+
+                        synchronized (data.activeFlights) {
+                            var iter = data.activeFlights.iterator();
+                            while (iter.hasNext()) {
+                                Let let = iter.next();
+                                let.step();
+
+                                if (let.isFinished()) {
+                                    EventQueue.invokeLater(() ->
+                                            AppContext.getInstance().getConsole().append("INFO: Flight " + let.getStart().getCode() + " -> " + let.getEnd().getCode() + " has landed\n")
+                                    );
+                                    iter.remove();
+
+                                    if (data.activeFlights.isEmpty()) {
+                                        EventQueue.invokeLater(() -> ctx.getSimulator().refresh());
+                                    }
+                                }
+                            }
+
+                            if (data.activeFlights.isEmpty()) {
+                                data.activeFlights.wait();
+                            } else {
+                                EventQueue.invokeLater(() -> ctx.getSimulator().refresh());
+                            }
                         }
 
-                        if (data.wasPaused) {
-                            data.wasPaused = false;
-                        }
-
-                        if(!data.activeFlights.isEmpty()) {
-                            EventQueue.invokeLater(() ->{
-                                ctx.getSimulator().refresh();
-                            });
-                            Thread.sleep(200);
+                        if (!data.activeFlights.isEmpty()) {
+                            Thread.sleep(200); // refresh svakih 200ms samo kad ima letova
                         }
                     }
-
-                }catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     EventQueue.invokeLater(() ->
                             AppContext.getInstance().getConsole().append(e.getMessage() + "\n")
                     );
