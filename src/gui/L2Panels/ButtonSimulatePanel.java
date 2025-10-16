@@ -15,9 +15,7 @@ public class ButtonSimulatePanel extends Panel {
 
     public ButtonSimulatePanel() {
         AppContext ctx = AppContext.getInstance();
-
-        // --- Postavljanje layout-a: 1 red, 3 kolone
-        setLayout(new GridLayout(1, 3, 5, 0)); // 5px razmak između dugmadi
+        setLayout(new GridLayout(1, 3, 5, 0));
 
         // --- Dugmad ---
         simulate = new Button("Simulate");
@@ -41,12 +39,12 @@ public class ButtonSimulatePanel extends Panel {
         SharedData data = new SharedData();
         ctx.setSharedData(data);
 
-        // --- Akcije dugmadi ---
+        // --- Akcije ---
         simulate.addActionListener((ae) -> startSimulation(ctx, data));
         pause.addActionListener((ae) -> togglePause(data));
         stop.addActionListener((ae) -> stopSimulation(ctx, data));
 
-        // --- Dodavanje dugmadi u panel ---
+        // --- Dodavanje u panel ---
         add(simulate);
         add(pause);
         add(stop);

@@ -49,7 +49,7 @@ public class Let {
         this.currY = start.getY();
 
         // --- Animacija ---
-        double framesPerSecond = 5.0;              // tvoj thread osvežava 5 puta u sekundi
+        double framesPerSecond = 5.0;
         double simulatedMinutesPerSecond = 10.0;  // 1 "tick" = 10 min
         double totalFrames = Math.max(1, (trajanjeMin / simulatedMinutesPerSecond) * framesPerSecond);
 
