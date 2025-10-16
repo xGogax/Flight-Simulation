@@ -48,7 +48,7 @@ public class SimulationPanel extends Panel {
         // TEXT
         this.add(simPanel, BorderLayout.NORTH);
         simPanel.setForeground(new Color(49, 95, 166));
-        simPanel.setFont(new Font("Arial", Font.BOLD, 20));
+        simPanel.setFont(new Font("Arial", Font.BOLD, 16));
         simPanel.setAlignment(Label.CENTER);
 
         // CANVAS

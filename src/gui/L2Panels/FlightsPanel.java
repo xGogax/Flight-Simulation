@@ -19,7 +19,7 @@ public class FlightsPanel extends Panel {
         //LABELA
         this.add(flightsL, BorderLayout.NORTH);
         flightsL.setForeground(new Color(49, 95, 166));
-        flightsL.setFont(new Font("Arial", Font.BOLD, 20));
+        flightsL.setFont(new Font("Arial", Font.BOLD, 16));
         flightsL.setAlignment(Label.CENTER);
 
         //TABELA
@@ -37,7 +37,7 @@ public class FlightsPanel extends Panel {
         scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
         scrollPane.add(tablePanel);
         scrollPane.setBackground(new Color(82, 176, 221));
-        scrollPane.setPreferredSize(new Dimension(500, 181 * 4 - 25));
+        scrollPane.setPreferredSize(new Dimension(400, 181 * 4 - 25));
 
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         this.add(tableContainer, BorderLayout.CENTER);
@@ -65,12 +65,12 @@ public class FlightsPanel extends Panel {
                     l.getChanged()
             );
 
-            row.setBounds(0, currentY, 500, rowHeight);
+            row.setBounds(0, currentY, 400, rowHeight);
             tablePanel.add(row);
             currentY += rowHeight;
             index++;
         }
-        tablePanel.setPreferredSize(new Dimension(500, Math.max(currentY, scrollPane.getHeight())));
+        tablePanel.setPreferredSize(new Dimension(400, Math.max(currentY, scrollPane.getHeight())));
         tablePanel.revalidate();
         tablePanel.repaint();
     }
@@ -81,7 +81,7 @@ public class FlightsPanel extends Panel {
 
         for (int i = 0; i < texts.length; i++) {
             Label label = new Label(texts[i], Label.CENTER);
-            label.setFont(new Font("Arial", Font.BOLD, 16));
+            label.setFont(new Font("Arial", Font.BOLD, 12));
 
             if (isChanged && i == 2) {
                 label.setForeground(Color.RED);

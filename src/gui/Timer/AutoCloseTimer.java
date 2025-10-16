@@ -21,7 +21,7 @@ public class AutoCloseTimer {
         warningDialog = new Dialog(parent, "Warning", true);
         warningDialog.setLayout(new BorderLayout());
         warningLabel = new Label("", Label.CENTER);
-        warningLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        warningLabel.setFont(new Font("Arial", Font.BOLD, 12));
         Button continueBtn = new Button("Continue");
         continueBtn.addActionListener(e -> {
             warningDialog.setVisible(false);

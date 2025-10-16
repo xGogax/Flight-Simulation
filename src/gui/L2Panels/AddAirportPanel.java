@@ -4,14 +4,13 @@ import Exceptions.*;
 import body.aerodrom.Aerodrom;
 import gui.AppContext;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class AddAirportPanel extends Panel {
-    TextField name = new TextField(15);
-    TextField code = new TextField(15);
-    TextField X = new TextField(15);
-    TextField Y = new TextField(15);
+    TextField name = new TextField();
+    TextField code = new TextField();
+    TextField X = new TextField();
+    TextField Y = new TextField();
     Button addAirport = new Button("Add Airport");
 
     Label nameLabel = new Label("Name");
@@ -24,55 +23,67 @@ public class AddAirportPanel extends Panel {
     }
 
     private void populateAddAirportPanel() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BorderLayout(5, 5));
+        this.setBackground(new Color(206, 237, 249));
 
-        // --- NAME and CODE ---
-        Panel row1 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        Font labelFont = new Font("Arial", Font.BOLD, 14);
+        Font fieldFont = new Font("Arial", Font.BOLD, 14);
+        Dimension fieldSize = new Dimension(80, 25);
 
-        Panel namePanel = new Panel(new BorderLayout());
+        // --- Panel sa poljima ---
+        Panel fieldsPanel = new Panel(new GridLayout(2, 2, 5, 5));
+        fieldsPanel.setBackground(new Color(206, 237, 249));
+
+        // NAME
+        nameLabel.setFont(labelFont);
         nameLabel.setForeground(new Color(49, 95, 166));
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        name.setFont(new Font("Arial", Font.BOLD, 20));
+        name.setFont(fieldFont);
+        name.setPreferredSize(fieldSize);
+        Panel namePanel = new Panel(new BorderLayout());
         namePanel.add(nameLabel, BorderLayout.NORTH);
         namePanel.add(name, BorderLayout.CENTER);
 
-        Panel codePanel = new Panel(new BorderLayout());
+        // CODE
+        codeLabel.setFont(labelFont);
         codeLabel.setForeground(new Color(49, 95, 166));
-        codeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        code.setFont(new Font("Arial", Font.BOLD, 20));
+        code.setFont(fieldFont);
+        code.setPreferredSize(fieldSize);
+        Panel codePanel = new Panel(new BorderLayout());
         codePanel.add(codeLabel, BorderLayout.NORTH);
         codePanel.add(code, BorderLayout.CENTER);
 
-        row1.add(namePanel);
-        row1.add(codePanel);
-
-        // --- X and Y ---
-        Panel row2 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-
-        Panel xPanel = new Panel(new BorderLayout());
+        // X
+        XLabel.setFont(labelFont);
         XLabel.setForeground(new Color(49, 95, 166));
-        XLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        X.setFont(new Font("Arial", Font.BOLD, 20));
+        X.setFont(fieldFont);
+        X.setPreferredSize(fieldSize);
+        Panel xPanel = new Panel(new BorderLayout());
         xPanel.add(XLabel, BorderLayout.NORTH);
         xPanel.add(X, BorderLayout.CENTER);
 
-        Panel yPanel = new Panel(new BorderLayout());
+        // Y
+        YLabel.setFont(labelFont);
         YLabel.setForeground(new Color(49, 95, 166));
-        YLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        Y.setFont(new Font("Arial", Font.BOLD, 20));
+        Y.setFont(fieldFont);
+        Y.setPreferredSize(fieldSize);
+        Panel yPanel = new Panel(new BorderLayout());
         yPanel.add(YLabel, BorderLayout.NORTH);
         yPanel.add(Y, BorderLayout.CENTER);
 
-        row2.add(xPanel);
-        row2.add(yPanel);
+        fieldsPanel.add(namePanel);
+        fieldsPanel.add(codePanel);
+        fieldsPanel.add(xPanel);
+        fieldsPanel.add(yPanel);
 
-        // --- BUTTON PANEL ---
-        Panel row3 = new Panel(new BorderLayout());
-        addAirport.setFont(new Font("Arial", Font.BOLD, 20));
+        // --- Dugme ---
+        addAirport.setFont(fieldFont);
         addAirport.setBackground(new Color(105, 161, 236));
-        row3.add(addAirport, BorderLayout.CENTER);
+        addAirport.setPreferredSize(new Dimension(100, 25));
 
-        // --- ACTION ---
+        this.add(fieldsPanel, BorderLayout.CENTER);
+        this.add(addAirport, BorderLayout.SOUTH);
+
+        // --- Action ---
         addAirport.addActionListener((ae) -> {
             AppContext ctx = AppContext.getInstance();
             try {
@@ -98,20 +109,14 @@ public class AddAirportPanel extends Panel {
                                 ") - (" + xText + ", " + yText + ")\n"
                 );
 
-            } catch (InvalidYCoordinate | InvalidXCoordinate | InvalidName | InvalidCode |
-                     CodeMustBeUnique | CoordsMustBeNumbers e) {
-                ctx.getConsole().append("ERROR: " + e.getMessage() + "\n");
+            } catch (Exception e) {
+                ctx.getConsole().append(e.getMessage() + "\n");
             }
 
-            // Reset polja
             name.setText("");
             code.setText("");
             X.setText("");
             Y.setText("");
         });
-
-        this.add(row1);
-        this.add(row2);
-        this.add(row3);
     }
 }

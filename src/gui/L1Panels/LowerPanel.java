@@ -39,32 +39,29 @@ public class LowerPanel extends Panel {
 
         // --- CONSOLE ---
         consoleArea = new TextArea();
-        consoleArea.setFont(new Font("Monospaced", Font.BOLD, 16));
+        consoleArea.setFont(new Font("Monospaced", Font.BOLD, 12));
         consoleArea.setEditable(false);
         consoleArea.setBackground(new Color(70, 108, 159));
         consoleArea.setForeground(Color.WHITE);
-        consoleArea.setColumns(80);
-        consoleArea.setRows(18);
+        consoleArea.setColumns(60);
+        consoleArea.setRows(8);
         ctx.setConsole(consoleArea);
 
-        // --- PANNELS and BUTTONS ---
+        // --- PANELS and BUTTONS ---
         abp = new AddAirportPanel();
         afp = new AddFlightPanel();
 
-        // --- FILE BUTTONS ---
         addFromFile = new Button("Import File");
         exportToFile = new Button("Export File");
-
-        Font buttonFont = new Font("Arial", Font.BOLD, 16);
+        Font buttonFont = new Font("Arial", Font.BOLD, 12);
         Color buttonColor = new Color(105, 161, 236);
 
         addFromFile.setFont(buttonFont);
         exportToFile.setFont(buttonFont);
-
         addFromFile.setBackground(buttonColor);
         exportToFile.setBackground(buttonColor);
 
-        Dimension buttonSize = new Dimension(300, 40);
+        Dimension buttonSize = new Dimension(50, 25);
         addFromFile.setPreferredSize(buttonSize);
         exportToFile.setPreferredSize(buttonSize);
 
@@ -72,7 +69,7 @@ public class LowerPanel extends Panel {
     }
 
     private void populateLowerPanel() {
-        this.setLayout(new BorderLayout(10, 10));
+        this.setLayout(new BorderLayout(5, 1));
         this.setBackground(new Color(206, 237, 249));
 
         // --- LEVA STRANA ---
@@ -83,27 +80,27 @@ public class LowerPanel extends Panel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(2, 2, 2, 2);
 
-        // AddAirportPanel
+        // --- AddAirportPanel i AddFlightPanel horizontalno ---
+        Panel airportFlightRow = new Panel(new GridLayout(1, 2, 5, 0));
+        airportFlightRow.add(abp);
+        airportFlightRow.add(afp);
+
         gbc.gridy = 0;
-        leftColumn.add(abp, gbc);
+        leftColumn.add(airportFlightRow, gbc);
 
-        // AddFlightPanel
-        gbc.gridy = 1;
-        leftColumn.add(afp, gbc);
-
-        // ADD FROM FILE and EXPORT FILE
-        Panel fileButtonsPanel = new Panel(new GridLayout(1, 2, 10, 0)); // 1 red, 2 kolone
+        // --- ADD FROM FILE and EXPORT FILE ---
+        Panel fileButtonsPanel = new Panel(new GridLayout(1, 2, 5, 0));
         fileButtonsPanel.setBackground(new Color(206, 237, 249));
         fileButtonsPanel.add(addFromFile);
         fileButtonsPanel.add(exportToFile);
 
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         leftColumn.add(fileButtonsPanel, gbc);
 
-        // ButtonSimulatePanel
-        gbc.gridy = 3;
+        // --- ButtonSimulatePanel ---
+        gbc.gridy = 2;
         leftColumn.add(buttonSimulatePanel, gbc);
 
         this.add(leftColumn, BorderLayout.WEST);

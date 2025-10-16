@@ -22,7 +22,7 @@ public class AirportsPanel extends Panel {
         // LABELA
         this.add(airPanel, BorderLayout.NORTH);
         airPanel.setForeground(new Color(49, 95, 166));
-        airPanel.setFont(new Font("Arial", Font.BOLD, 20));
+        airPanel.setFont(new Font("Arial", Font.BOLD, 16));
         airPanel.setAlignment(Label.CENTER);
 
         //TABELA
@@ -40,7 +40,7 @@ public class AirportsPanel extends Panel {
         scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
         scrollPane.add(tablePanel);
         scrollPane.setBackground(new Color(82, 176, 221));
-        scrollPane.setPreferredSize(new Dimension(735, 181 * 4 - 25));
+        scrollPane.setPreferredSize(new Dimension(500, 181 * 4 - 25));
 
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         this.add(tableContainer, BorderLayout.CENTER);
@@ -81,13 +81,13 @@ public class AirportsPanel extends Panel {
                 }
             }
 
-            row.setBounds(0, currentY, 735, rowHeight);
+            row.setBounds(0, currentY, 500, rowHeight);
             tablePanel.add(row);
             currentY += rowHeight;
             index++;
         }
 
-        tablePanel.setPreferredSize(new Dimension(735, Math.max(currentY, 400)));
+        tablePanel.setPreferredSize(new Dimension(500, Math.max(currentY, 400)));
         tablePanel.revalidate();
         tablePanel.repaint();
     }
@@ -101,12 +101,12 @@ public class AirportsPanel extends Panel {
                 //checkbox
                 Checkbox checkbox = new Checkbox(texts[i]);
                 checkbox.setState(texts[i].equals("Yes"));
-                checkbox.setFont(new Font("Arial", Font.BOLD, 16));
+                checkbox.setFont(new Font("Arial", Font.BOLD, 12));
                 row.add(checkbox);
             } else {
                 Label label = new Label(texts[i], Label.CENTER);
                 label.setForeground(Color.BLACK);
-                label.setFont(new Font("Arial", Font.BOLD, 16));
+                label.setFont(new Font("Arial", Font.BOLD, 12));
                 row.add(label);
             }
         }

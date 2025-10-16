@@ -7,14 +7,13 @@ import body.let.Let;
 import body.let.LetContainer;
 import gui.AppContext;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class AddFlightPanel extends Panel {
-    TextField start = new TextField(15);
-    TextField end = new TextField(15);
-    TextField takeOff = new TextField(15);
-    TextField duration = new TextField(15);
+    TextField start = new TextField();
+    TextField end = new TextField();
+    TextField takeOff = new TextField();
+    TextField duration = new TextField();
     Button addFlight = new Button("Add Flight");
 
     Label startLabel = new Label("Start Airport");
@@ -38,64 +37,68 @@ public class AddFlightPanel extends Panel {
     }
 
     private void populateAddFlightPanel() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BorderLayout(5,5));
+        this.setBackground(new Color(206, 237, 249));
 
-        // START and END
-        Panel row1 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        Font labelFont = new Font("Arial", Font.BOLD, 14);
+        Font fieldFont = new Font("Arial", Font.BOLD, 14);
+        Dimension fieldSize = new Dimension(80, 25);
 
-        Panel startPanel = new Panel(new BorderLayout());
+        // --- Panel sa poljima ---
+        Panel fieldsPanel = new Panel(new GridLayout(2, 2, 5, 5));
+        fieldsPanel.setBackground(new Color(206, 237, 249));
+
+        // START
+        startLabel.setFont(labelFont);
         startLabel.setForeground(new Color(49, 95, 166));
-        startLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        startLabel.setAlignment(Label.LEFT);
-        start.setFont(new Font("Arial", Font.BOLD, 20));
+        start.setFont(fieldFont);
+        start.setPreferredSize(fieldSize);
+        Panel startPanel = new Panel(new BorderLayout());
         startPanel.add(startLabel, BorderLayout.NORTH);
         startPanel.add(start, BorderLayout.CENTER);
 
-        Panel endPanel = new Panel(new BorderLayout());
+        // END
+        endLabel.setFont(labelFont);
         endLabel.setForeground(new Color(49, 95, 166));
-        endLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        endLabel.setAlignment(Label.LEFT);
-        end.setFont(new Font("Arial", Font.BOLD, 20));
+        end.setFont(fieldFont);
+        end.setPreferredSize(fieldSize);
+        Panel endPanel = new Panel(new BorderLayout());
         endPanel.add(endLabel, BorderLayout.NORTH);
         endPanel.add(end, BorderLayout.CENTER);
 
-        row1.add(startPanel);
-        row1.add(endPanel);
-
-        // TAKEOFF and DURATION
-        Panel row2 = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-
-        Panel takeOffPanel = new Panel(new BorderLayout());
+        // TAKEOFF
+        takeOffLabel.setFont(labelFont);
         takeOffLabel.setForeground(new Color(49, 95, 166));
-        takeOffLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        takeOffLabel.setAlignment(Label.LEFT);
-        takeOff.setFont(new Font("Arial", Font.BOLD, 20));
+        takeOff.setFont(fieldFont);
+        takeOff.setPreferredSize(fieldSize);
+        Panel takeOffPanel = new Panel(new BorderLayout());
         takeOffPanel.add(takeOffLabel, BorderLayout.NORTH);
         takeOffPanel.add(takeOff, BorderLayout.CENTER);
 
-        Panel durationPanel = new Panel(new BorderLayout());
+        // DURATION
+        durationLabel.setFont(labelFont);
         durationLabel.setForeground(new Color(49, 95, 166));
-        durationLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        durationLabel.setAlignment(Label.LEFT);
-        duration.setFont(new Font("Arial", Font.BOLD, 20));
+        duration.setFont(fieldFont);
+        duration.setPreferredSize(fieldSize);
+        Panel durationPanel = new Panel(new BorderLayout());
         durationPanel.add(durationLabel, BorderLayout.NORTH);
         durationPanel.add(duration, BorderLayout.CENTER);
 
-        row2.add(takeOffPanel);
-        row2.add(durationPanel);
+        fieldsPanel.add(startPanel);
+        fieldsPanel.add(endPanel);
+        fieldsPanel.add(takeOffPanel);
+        fieldsPanel.add(durationPanel);
 
-        // BUTTON
-        Panel row3 = new Panel(new BorderLayout());
-        addFlight.setFont(new Font("Arial", Font.BOLD, 20));
+        // --- Dugme ---
+        addFlight.setFont(fieldFont);
         addFlight.setBackground(new Color(105, 161, 236));
-        row3.add(addFlight, BorderLayout.CENTER);
+        addFlight.setPreferredSize(new Dimension(100, 25));
 
+        this.add(fieldsPanel, BorderLayout.CENTER);
+        this.add(addFlight, BorderLayout.SOUTH);
+
+        // --- Action ---
         addFlight.addActionListener((ae) -> handleAddFlight());
-
-        // ADD ALL ROWS
-        this.add(row1);
-        this.add(row2);
-        this.add(row3);
     }
 
     private void handleAddFlight() {
@@ -137,9 +140,8 @@ public class AddFlightPanel extends Panel {
 
             flightsPanel.refreshTable();
 
-        } catch (FlightMustHaveAirport | InvalidTime | FlightDuration |
-                 SameAirports | FlightDurationString e) {
-            consoleArea.append("ERROR: " + e.getMessage() + "\n");
+        } catch (Exception e) {
+            consoleArea.append(e.getMessage() + "\n");
         }
 
         start.setText("");
