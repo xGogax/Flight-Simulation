@@ -73,6 +73,7 @@ public class SimulationPanel extends Panel {
     }
 
     private void handleClick(int x, int y) {
+        //aerodrom
         for (Aerodrom a : aerodroms.getAerodroms()) {
             int ax = (a.getX() + 90) * scale;
             int ay = (90 - a.getY()) * scale;
@@ -80,6 +81,22 @@ public class SimulationPanel extends Panel {
             if (x >= ax && x <= ax + scale && y >= ay && y <= ay + scale) {
                 toggleBlinking(a);
                 return;
+            }
+        }
+
+        //let
+        if (sharedData != null) {
+            synchronized (sharedData.activeFlights) {
+                for (Let let : sharedData.activeFlights) {
+                    int lx = (int)((let.getCurrentX() + 90) * scale);
+                    int ly = (int)((90 - let.getCurrentY()) * scale);
+                    int flightSize = 8;
+
+                    if (x >= lx && x <= lx + flightSize && y >= ly && y <= ly + flightSize) {
+                        System.out.println("Kliknut let: " + let.getStart().getCode() + " -> " + let.getEnd().getCode());
+                        return;
+                    }
+                }
             }
         }
     }
