@@ -159,6 +159,12 @@ public class ButtonSimulatePanel extends Panel {
         data.hours = 0;
         data.minutes = 0;
 
+        AirportFlightTable aft = new AirportFlightTable(
+                ctx.getAerodromContainer(),
+                ctx.getLetContainer()
+        );
+        aft.reset();
+
         pause.setEnabled(false);
         pause.setLabel("Pause");
 

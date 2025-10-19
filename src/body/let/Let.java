@@ -116,6 +116,20 @@ public class Let {
         }
     }
 
+    public void resetPosition(){
+        this.currX = start.getX();
+        this.currY = start.getY();
+        this.finished = false;
+
+        double framesPerSecond = 5.0;
+        double simulatedMinutesPerSecond = 10.0;
+        double totalFrames = Math.max(1, (trajanjeMin / simulatedMinutesPerSecond) * framesPerSecond);
+
+        this.stepX = (end.getX() - start.getX()) / totalFrames;
+        this.stepY = (end.getY() - start.getY()) / totalFrames;
+        this.ticksRemaining = (int) totalFrames;
+    }
+
     public boolean isFinished() { return finished; }
 
     public double getCurrentX() { return currX; }

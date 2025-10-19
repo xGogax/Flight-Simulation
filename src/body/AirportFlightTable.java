@@ -90,6 +90,7 @@ public class AirportFlightTable {
         for(Map.Entry<Aerodrom, List<Let>> entry : flightsByAirport.entrySet()){
             for(Let l : entry.getValue()){
                 l.setChanged(false);
+                l.resetPosition();
             }
         }
         flightsPanel.refreshTable();
